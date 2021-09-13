@@ -1,1 +1,28 @@
-<p>login works!</p>
+<div style="margin: 10px;">
+  <div class="container">
+    <div class="row">
+      <div class="offset-md-2 col-md-8 offset-lg-3 col-lg-6">
+        <div class="card">
+          <div class="card-body">
+            <form [formGroup]="form" (ngSubmit)="logIn()">
+              <div class="form-group">
+                <label for="inputEmail">Email address</label>
+                <input type="email" class="form-control" id="inputEmail" placeholder="Enter email" formControlName="email">
+              </div>
+              <div class="form-group">
+                <label for="inputPassword">Password</label>
+                <input type="password" class="form-control" id="inputPassword" placeholder="Password" formControlName="password">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block" [disabled]="!(form.getRawValue().email && form.getRawValue().password)">LOG IN</button>
+              <small *ngIf="error" class="form-text"><i style="color: red;">{{error}}</i></small>
+              <a routerLink="/signup">Create a new account</a>
+              <div></div>
+              <a routerLink="/signup">Forgot password</a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

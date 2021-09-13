@@ -1,5 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("user", {
+      userID: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+      },
       firstName: {
         type: Sequelize.STRING
       },
@@ -13,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING
       },
       gender: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(7)
       },
       address: {
         type: Sequelize.STRING
@@ -22,8 +28,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DATEONLY
       },
       phoneNumber: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(20)
       }
+    }, {
+      timestamps: false,
+      freezeTableName: true,
     });
   
     return User;

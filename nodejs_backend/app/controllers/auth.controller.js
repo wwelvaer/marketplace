@@ -35,7 +35,7 @@ exports.signin = (req, res) => {
   })
     .then(user => {
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.status(404).send({ message: "User with given email not found" });
       }
 
       var passwordIsValid = bcrypt.compareSync(
@@ -46,7 +46,7 @@ exports.signin = (req, res) => {
       if (!passwordIsValid) {
         return res.status(401).send({
           accessToken: null,
-          message: "Invalid Password!"
+          message: "Invalid Password"
         });
       }
 
@@ -54,7 +54,6 @@ exports.signin = (req, res) => {
         expiresIn: 86400 // 24 hours
       });
 
-      var authorities = [];
       res.status(200).send({
         id: user.userID,
         firstName: user.firstName,
