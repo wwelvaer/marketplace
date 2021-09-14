@@ -12,6 +12,7 @@ export class UserService {
     let u = this.cookieService.get('user');
     if (u)
       this.user = JSON.parse(u);
+    console.log(u)
   }
 
   isLoggedIn(): boolean{
@@ -36,5 +37,6 @@ export interface User {
   id: number,
   firstName: string,
   lastName: string,
+  email: string,
   accesToken: string
 }
