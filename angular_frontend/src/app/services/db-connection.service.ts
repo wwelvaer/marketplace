@@ -32,4 +32,24 @@ export class DbConnectionService {
   postUserData(id: number, userToken: string, fields: Object){
     return this.http.post(`${this.url}/api/userdata?id=${id}`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
+
+  getAllListings(userToken: string){
+    return this.http.get(`${this.url}/api/listings`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  getUserListings(id: number, userToken: string){
+    return this.http.get(`${this.url}/api/listings/user?id=${id}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  createListing(userToken: string, fields: Object){
+    return this.http.post(`${this.url}/api/listing/create`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  getListing(id: number,  userToken: string){
+    return this.http.get(`${this.url}/api/listing?id=${id}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  postListing(id: number,  userToken: string, fields: Object){
+    return this.http.post(`${this.url}/api/listing?id=${id}`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
 }

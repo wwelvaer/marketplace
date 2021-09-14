@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ProfileComponent } from './profile/profile.component';
 import { CookieService } from 'ngx-cookie-service';
+import { ListingsComponent } from './listings/listings.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { CookieService } from 'ngx-cookie-service';
     LoginComponent,
     SignupComponent,
     HomeComponent,
-    ProfileComponent
+    ProfileComponent,
+    ListingsComponent
   ],
   imports: [
     BrowserModule,
