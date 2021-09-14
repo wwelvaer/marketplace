@@ -7,7 +7,7 @@ import { UserService } from './services/user.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'marketplace';
+  title = 'Marketplace';
 
   constructor(public user: UserService){
   }
