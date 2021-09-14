@@ -6,13 +6,14 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class UserService {
 
+  cookieName: string = 'user'
   user: User
+  public storeCookie: boolean = false;
 
   constructor(private cookieService: CookieService) {
-    let u = this.cookieService.get('user');
+    let u = this.cookieService.get(this.cookieName);
     if (u)
       this.user = JSON.parse(u);
-    console.log(u)
   }
 
   isLoggedIn(): boolean{
@@ -20,7 +21,8 @@ export class UserService {
   }
 
   setUser(user: User): void{
-    this.cookieService.set('user', JSON.stringify(user), 1);
+    if (this.storeCookie)
+      this.cookieService.set(this.cookieName, JSON.stringify(user), 1);
     this.user = user;
   }
 
@@ -29,6 +31,7 @@ export class UserService {
   }
 
   logOut(): void{
+    this.cookieService.delete(this.cookieName)
     this.user = undefined;
   }
 }
@@ -38,5 +41,5 @@ export interface User {
   firstName: string,
   lastName: string,
   email: string,
-  accesToken: string
+  accessToken: string
 }

@@ -19,7 +19,8 @@ export class LoginComponent implements OnInit {
     private route: Router) {
     this.form = new FormGroup({
       email: new FormControl(),
-      password: new FormControl()
+      password: new FormControl(),
+      keepSignedIn: new FormControl()
     });
   }
 
@@ -30,10 +31,10 @@ export class LoginComponent implements OnInit {
     let d = this.form.getRawValue();
     this.db.signIn(d.email, d.password)
       .then((r: User) => {
+        this.user.storeCookie = d.keepSignedIn
         this.user.setUser(r)
         this.route.navigateByUrl('/home')
       })
       .catch(r => this.error = r.error.message);
   }
-
 }

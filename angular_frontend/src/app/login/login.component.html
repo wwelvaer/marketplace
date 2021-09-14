@@ -13,6 +13,10 @@
                 <label for="inputPassword">Password</label>
                 <input type="password" class="form-control" id="inputPassword" placeholder="Password" formControlName="password">
               </div>
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="checkBox" formControlName="keepSignedIn">
+                <label class="form-check-label" for="checkBox">Keep me signed in</label>
+              </div>
               <button type="submit" class="btn btn-primary btn-block" [disabled]="!(form.getRawValue().email && form.getRawValue().password)">LOG IN</button>
               <small *ngIf="error" class="form-text"><i style="color: red;">{{error}}</i></small>
               <a routerLink="/signup">Create a new account</a>

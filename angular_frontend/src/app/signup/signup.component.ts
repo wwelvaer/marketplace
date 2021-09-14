@@ -46,12 +46,7 @@ export class SignupComponent implements OnInit {
     delete v.repeatPassword;
     this.db.signUp(v)
       .then(_ => {
-        this.db.signIn(v.email, v.password)
-          .then((r: User) => {
-            this.user.setUser(r)
-            this.route.navigateByUrl('/home')
-          })
-          .catch(r => this.error = r.error.message);
+        this.route.navigateByUrl('/login')
       })
       .catch(r => this.error = r.error.message);
   }
