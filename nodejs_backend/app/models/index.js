@@ -26,5 +26,8 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 db.user = require("../models/user.model.js")(sequelize, Sequelize);
+db.listing = require("../models/listing.model.js")(sequelize, Sequelize);
+
+db.listing.belongsTo(db.user, {foreignKey: 'userID'})
 
 module.exports = db;
