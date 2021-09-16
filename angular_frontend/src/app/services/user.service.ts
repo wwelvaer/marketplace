@@ -34,6 +34,10 @@ export class UserService {
     this.cookieService.delete(this.cookieName)
     this.user = undefined;
   }
+
+  getLoginToken(): string {
+    return this.user ? this.user.accessToken : ""
+  }
 }
 
 export interface User {

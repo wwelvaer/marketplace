@@ -18,6 +18,8 @@ import { MatInputModule} from "@angular/material/input";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatNativeDateModule } from '@angular/material/core';
+import { DetailComponent } from './listings/detail/detail.component';
+import { FormComponent } from './listings/form/form.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { MatNativeDateModule } from '@angular/material/core';
     SignupComponent,
     HomeComponent,
     ProfileComponent,
-    ListingsComponent
+    ListingsComponent,
+    DetailComponent,
+    FormComponent
   ],
   imports: [
     BrowserModule,

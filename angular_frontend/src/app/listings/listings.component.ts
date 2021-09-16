@@ -15,10 +15,10 @@ export class ListingsComponent implements OnInit {
   sortCols = [
     {
       name: 'Name: A -> Z',
-      sortFunc: (a, b) => a.name.localeCompare(b.name)
+      sortFunc: (a, b) => (a.name ? a.name : "").localeCompare(b.name ? b.name : "")
     }, {
       name: 'Name: Z -> A',
-      sortFunc: (a, b) => -a.name.localeCompare(b.name)
+      sortFunc: (a, b) => -(a.name ? a.name : "").localeCompare(b.name ? b.name : "")
     }, {
       name: 'Available assets: Low -> High',
       sortFunc: (a, b) => a.availableAssets - b.availableAssets
@@ -27,10 +27,10 @@ export class ListingsComponent implements OnInit {
       sortFunc: (a, b) => b.availableAssets - a.availableAssets
     }, {
       name: 'Start Date: Recent -> Oldest',
-      sortFunc: (a, b) => -a.startDate.localeCompare(b.startDate)
+      sortFunc: (a, b) => -(a.startDate ? a.startDate : "").localeCompare(b.startDate ? b.startDate : "")
     }, {
       name: 'Start Date: Oldest -> Recent',
-      sortFunc: (a, b) => a.startDate.localeCompare(b.startDate)
+      sortFunc: (a, b) => (a.startDate ? a.startDate : "").localeCompare(b.startDate ? b.startDate : "")
     }, {
       name: 'Price: Low -> High',
       sortFunc: (a, b) => a.price - b.price
@@ -38,6 +38,12 @@ export class ListingsComponent implements OnInit {
       name: 'Price: High -> Low',
       sortFunc: (a, b) => b.price - a.price
     }];
+
+  pageLimitOption = [1, 10, 20, 50]
+  pageLimitIndex = 1;
+  currentPage = 1;
+
+  maxPage = (listings) => Math.ceil(listings.length / this.pageLimitOption[this.pageLimitIndex])
 
   // lambda function that filters and sorts entries using searchTerm and searchCols
   filteredListings = () => this.listings

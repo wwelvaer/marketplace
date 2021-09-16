@@ -3,7 +3,7 @@ const Listing = db.listing;
 
 exports.getAllListings = (req, res) => {
     Listing.findAll({
-        attributes: ['name', 'availableAssets', 'startDate', 'price', 'picture']
+        attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture']
     }).then(l => {
         return res.status(200).send({listings: l})
     })
@@ -29,8 +29,8 @@ exports.createListing = (req, res) => {
         price: req.body.price,
         picture: req.body.picture,
         userID: req.userId
-    }).then(_ => {
-        res.send({ message: "Listing was createt successfully!" });
+    }).then(l => {
+        res.send({ message: "Listing was createt successfully!", listingID: l.listingID });
     })
     .catch(err => {
         res.status(500).send({ message: err.message });
