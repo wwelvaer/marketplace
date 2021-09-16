@@ -66,6 +66,8 @@ exports.postListing = (req, res) => {
     }).then(listing => {
         if (!listing)
             return res.status(404).send({ message: "Invalid listingID" });
+        if (req.userId !== listing.userID)
+            return res.status(401).send({ message: "Unauthorized to edit another user's listing"});
         listing.name = req.body.name
         listing.description = req.body.description
         listing.availableAssets = req.body.availableAssets

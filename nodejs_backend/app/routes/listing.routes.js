@@ -12,13 +12,11 @@ module.exports = function(app) {
   
     app.get(
       "/api/listings",
-      [authJwt.verifyToken],
       controller.getAllListings
     );
   
     app.get(
       "/api/listings/user",
-      [authJwt.verifyToken],
       controller.getUserListings
     );
 
@@ -30,7 +28,6 @@ module.exports = function(app) {
 
     app.get(
       "/api/listing",
-      [authJwt.verifyToken],
       controller.getListing
     );
 

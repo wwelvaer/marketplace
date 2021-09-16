@@ -12,6 +12,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProfileComponent } from './profile/profile.component';
 import { CookieService } from 'ngx-cookie-service';
 import { ListingsComponent } from './listings/listings.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatCardModule} from '@angular/material/card';
+import { MatInputModule} from "@angular/material/input";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -24,13 +30,21 @@ import { ListingsComponent } from './listings/listings.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
     NgbModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatCardModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatNativeDateModule
   ],
-  providers: [CookieService],
+  providers: [CookieService,
+    MatDatepickerModule,
+    MatNativeDateModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

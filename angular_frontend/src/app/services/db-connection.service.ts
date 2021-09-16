@@ -33,20 +33,20 @@ export class DbConnectionService {
     return this.http.post(`${this.url}/api/userdata?id=${id}`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
-  getAllListings(userToken: string){
-    return this.http.get(`${this.url}/api/listings`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  getAllListings(){
+    return this.http.get(`${this.url}/api/listings`).toPromise();
   }
 
-  getUserListings(id: number, userToken: string){
-    return this.http.get(`${this.url}/api/listings/user?id=${id}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  getUserListings(userId: number){
+    return this.http.get(`${this.url}/api/listings/user?id=${userId}`).toPromise();
   }
 
   createListing(userToken: string, fields: Object){
     return this.http.post(`${this.url}/api/listing/create`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
-  getListing(id: number,  userToken: string){
-    return this.http.get(`${this.url}/api/listing?id=${id}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  getListing(id: number){
+    return this.http.get(`${this.url}/api/listing?id=${id}`).toPromise();
   }
 
   postListing(id: number,  userToken: string, fields: Object){
