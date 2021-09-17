@@ -27,7 +27,12 @@ db.sequelize = sequelize;
 
 db.user = require("../models/user.model.js")(sequelize, Sequelize);
 db.listing = require("../models/listing.model.js")(sequelize, Sequelize);
+db.booking = require("../models/booking.model.js")(sequelize, Sequelize);
 
 db.listing.belongsTo(db.user, {foreignKey: 'userID'})
+
+db.booking.belongsTo(db.listing, {foreignKey: 'listingID'})
+db.booking.belongsTo(db.user, {foreignKey: 'bookerID'})
+
 
 module.exports = db;

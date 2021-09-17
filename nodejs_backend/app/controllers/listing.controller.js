@@ -30,7 +30,7 @@ exports.createListing = (req, res) => {
         picture: req.body.picture,
         userID: req.userId
     }).then(l => {
-        res.send({ message: "Listing was createt successfully!", listingID: l.listingID });
+        res.send({ message: "Listing was created successfully!", listingID: l.listingID });
     })
     .catch(err => {
         res.status(500).send({ message: err.message });

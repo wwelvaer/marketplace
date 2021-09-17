@@ -56,4 +56,20 @@ export class DbConnectionService {
   deleteListing(id: number,  userToken: string){
     return this.http.get(`${this.url}/api/listing/delete?id=${id}`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
+
+  getListingBookings(listingID: number, userToken: string){
+    return this.http.get(`${this.url}/api/bookings/listing?id=${listingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  getUserBookings(userToken: string){
+    return this.http.get(`${this.url}/api/bookings/user`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  createBooking(userToken: string, fields: Object){
+    return this.http.post(`${this.url}/api/booking/create`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  deleteBooking(bookingID: number, userToken: string){
+    return this.http.get(`${this.url}/booking/delete?id=${bookingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
 }
