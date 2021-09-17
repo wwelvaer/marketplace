@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { DbConnectionService } from '../services/db-connection.service';
 import { UserService } from '../services/user.service';
 
@@ -51,10 +52,24 @@ export class ListingsComponent implements OnInit {
     .sort(this.sortCols[this.sortCol].sortFunc)
 
   constructor(private db: DbConnectionService,
-    private user: UserService) { }
+    private user: UserService,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.db.getAllListings().then(l => this.listings = l['listings'])
+    this.route.queryParamMap.subscribe(qMap => {
+      let uId = qMap['params'].id;
+      if (uId)
+        this.db.getUserListings(uId).then(l => this.listings = l['listings'])
+      else
+        this.db.getAllListings().then(l => this.listings = l['listings'])
+    })
+
+  }
+
+  deleteListing(id: number){
+    this.db.deleteListing(id, this.user.getLoginToken()).then(_ => {
+      this.listings = this.listings.filter(x => x.listingID !== id)
+    })
   }
 
 }

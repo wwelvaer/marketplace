@@ -38,6 +38,10 @@ export class UserService {
   getLoginToken(): string {
     return this.user ? this.user.accessToken : ""
   }
+
+  getId(): number {
+    return this.user ? this.user.id : -1
+  }
 }
 
 export interface User {

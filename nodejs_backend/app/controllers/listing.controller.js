@@ -3,7 +3,7 @@ const Listing = db.listing;
 
 exports.getAllListings = (req, res) => {
     Listing.findAll({
-        attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture']
+        attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'userID']
     }).then(l => {
         return res.status(200).send({listings: l})
     })
@@ -11,7 +11,7 @@ exports.getAllListings = (req, res) => {
 
 exports.getUserListings = (req, res) => {
     Listing.findAll({
-        attributes: ['name', 'availableAssets', 'startDate', 'price', 'picture'],
+        attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'userID'],
         where: {
             userID: req.query.id
         }
@@ -46,6 +46,7 @@ exports.getListing = (req, res) => {
         if (!listing)
             return res.status(404).send({ message: "Invalid listingID" });
         res.status(200).send({
+            listingID: listing.listingID,
             name: listing.name,
             description: listing.description,
             availableAssets: listing.availableAssets,
@@ -74,11 +75,26 @@ exports.postListing = (req, res) => {
         listing.startDate = req.body.startDate
         listing.price = req.body.price
         listing.picture = req.body.picture
-        user.save().then(_ => {
+        listing.save().then(_ => {
             res.send({ message: "Listing was updatet successfully!" });
-        })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
+        }).catch(err => {
+            res.send({ message: "Listing couldn't be updatet updatet" , err: err})
         });
     })
 };
+
+exports.deleteListing = (req, res) => {
+    Listing.findOne({
+        where: {
+            listingID: req.query.id
+        }
+    }).then(listing => {
+        if (!listing)
+            return res.status(404).send({ message: "Invalid listingID" });
+        if (req.userId !== listing.userID)
+            return res.status(401).send({ message: "Unauthorized to delete another user's listing"});
+        listing.destroy().then(_ => {
+            res.send({ message: "Listing was deleted successfully!" });
+        })
+    })
+}

@@ -52,4 +52,8 @@ export class DbConnectionService {
   postListing(id: number,  userToken: string, fields: Object){
     return this.http.post(`${this.url}/api/listing?id=${id}`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
+
+  deleteListing(id: number,  userToken: string){
+    return this.http.get(`${this.url}/api/listing/delete?id=${id}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
 }

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="offset-md-2 col-md-8 offset-lg-3 col-lg-6">
-        <h1>Create Listing</h1>
+        <h1>{{listingId < 0 ? 'Create Listing' : 'Edit Listing'}}</h1>
         <div class="card">
           <div class="card-body">
             <form [formGroup]="form" (ngSubmit)="createListing()">
@@ -32,7 +32,7 @@
                 </div>
               </div>
               <small class="form-text"><i style="color: red;">*</i> Required</small>
-              <button type="submit" class="btn btn-primary btn-block" *ngIf="form.getRawValue() as f" [disabled]="!(f.name && f.price)">Create Listing</button>
+              <button type="submit" class="btn btn-primary btn-block" *ngIf="form.getRawValue() as f" [disabled]="!(f.name && f.price)">{{listingId < 0 ? 'Create Listing' : 'Edit Listing'}}</button>
               <small *ngIf="error" class="form-text"><i style="color: red;">{{error}}</i></small>
             </form>
           </div>

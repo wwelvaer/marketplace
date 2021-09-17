@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'listings', component: ListingsComponent },
   { path: 'listings/details/:id', component: DetailComponent },
-  { path: 'listings/create', component: FormComponent },
+  { path: 'listings/form', component: FormComponent },
 ];
 
 @NgModule({

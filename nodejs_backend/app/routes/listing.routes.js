@@ -36,4 +36,10 @@ module.exports = function(app) {
       [authJwt.verifyToken],
       controller.postListing
     );
+
+    app.get(
+      "/api/listing/delete",
+      [authJwt.verifyToken],
+      controller.deleteListing
+    );
   };
