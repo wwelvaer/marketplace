@@ -29,8 +29,14 @@ module.exports = function(app) {
     );
 
     app.get(
-      "/api/booking/delete",
+      "/api/booking/cancel",
       [authJwt.verifyToken],
-      controller.deleteBooking
+      controller.cancelBooking
+    );
+
+    app.get(
+      "/api/booking/confirmPayment",
+      [authJwt.verifyToken],
+      controller.confirmPayment
     );
   };

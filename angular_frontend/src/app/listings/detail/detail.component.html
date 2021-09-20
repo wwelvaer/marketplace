@@ -1,4 +1,4 @@
-<div *ngIf="listing" class="container" style="margin: 10px;">
+<div *ngIf="listing && !error" class="container" style="margin: 10px;">
   <div class="row">
     <div class="col">
       <h1>{{ listing.name }} </h1>
@@ -20,7 +20,7 @@
     </div>
     <div class="col">
       <h2>Asking Price:<b> €{{ listing.price }}</b></h2>
-      <div class="card">
+      <div class="card" *ngIf="listing.userID !== user.getId()">
         <div class="card-body">
           <form [formGroup]="form" (ngSubmit)="createBooking()">
             <div class="form-group">
@@ -33,8 +33,39 @@
       </div>
     </div>
   </div>
-
-
+  <div *ngIf="listing.userID === user.getId()">
+    <h2>Bookings</h2>
+    <div *ngIf="bookings.length > 0">
+      <table class="table" style="margin-bottom: 20px;">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">Booker</th>
+            <th scope="col"># Assets</th>
+            <th scope="col">Price</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let b of bookings">
+            <th scope="row">{{b.user.name}}</th>
+            <td>{{b.numberOfAssets}}</td>
+            <td>€{{b.numberOfAssets * b.pricePerAsset}}</td>
+            <td>{{b.status}}</td>
+            <td>
+              <div class="btn-group" role="group" *ngIf="b.status !== 'cancelled'">
+                <button type="button" *ngIf="b.status !== 'payed'" class="btn btn-lg btn-success" (click)="confirmPayment(b.bookingID)">Confirm Payment</button>
+                <button type="button" class="btn btn-lg btn-danger" (click)="cancelBooking(b.bookingID)">Cancel</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="bookings.length === 0">
+      No one has booked yet
+    </div>
+  </div>
 </div>
 <div *ngIf="error" style="margin: 10px;">
   <h1>ERROR</h1>

@@ -11,6 +11,7 @@ import { UserService } from '../services/user.service';
 export class ListingsComponent implements OnInit {
   selected: Date | null;
   listings = []
+  bookings: boolean = false;
   searchTerm: string = "";
   sortCol: number = 4;
   sortCols = [
@@ -40,7 +41,7 @@ export class ListingsComponent implements OnInit {
       sortFunc: (a, b) => b.price - a.price
     }];
 
-  pageLimitOption = [1, 10, 20, 50]
+  pageLimitOption = [10, 20, 50]
   pageLimitIndex = 1;
   currentPage = 1;
 
@@ -57,13 +58,22 @@ export class ListingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(qMap => {
-      let uId = qMap['params'].id;
-      if (uId)
-        this.db.getUserListings(uId).then(l => this.listings = l['listings'])
-      else
-        this.db.getAllListings().then(l => this.listings = l['listings'])
+      this.bookings = !!qMap['params'].bookings
+      if (this.bookings)
+        this.fetchBookings();
+      else {
+        let uId = qMap['params'].id;
+        if (uId)
+            this.db.getUserListings(uId).then(l => this.listings = l['listings'])
+        else
+          this.db.getAllListings().then(l => this.listings = l['listings'])
+      }
     })
+  }
 
+  fetchBookings(){
+    this.db.getUserBookings(this.user.getLoginToken())
+        .then(l => this.listings = l['bookings'].sort((a, b) => b.bookingID - a.bookingID).map(x => {return {...x, ...x.listing}}))
   }
 
   deleteListing(id: number){
@@ -71,5 +81,11 @@ export class ListingsComponent implements OnInit {
       this.listings = this.listings.filter(x => x.listingID !== id)
     })
   }
+
+  cancelBooking(bookingID: number){
+    this.db.cancelBooking(bookingID, this.user.getLoginToken()).then(_ => this.fetchBookings())
+  }
+
+
 
 }

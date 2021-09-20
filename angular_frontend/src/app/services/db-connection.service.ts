@@ -69,7 +69,11 @@ export class DbConnectionService {
     return this.http.post(`${this.url}/api/booking/create`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
-  deleteBooking(bookingID: number, userToken: string){
-    return this.http.get(`${this.url}/booking/delete?id=${bookingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  cancelBooking(bookingID: number, userToken: string){
+    return this.http.get(`${this.url}/api/booking/cancel?id=${bookingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  confirmPayment(bookingID: number, userToken: string){
+    return this.http.get(`${this.url}/api/booking/confirmPayment?id=${bookingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 }

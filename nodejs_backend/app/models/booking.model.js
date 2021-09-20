@@ -12,6 +12,9 @@ module.exports = (sequelize, Sequelize) => {
       pricePerAsset: {
         type: Sequelize.DOUBLE
       },
+      status: {
+        type: Sequelize.ENUM('payed', 'reserved', 'cancelled')
+      }
     }, {
       timestamps: false,
       freezeTableName: true,

@@ -15,11 +15,13 @@ export class DetailComponent implements OnInit {
   listing: object;
   error: string;
   form:FormGroup;
+  bookings = [];
 
   constructor(private route: ActivatedRoute,
     private db : DbConnectionService,
     private user: UserService,
-    private location: Location) {
+    private location: Location,
+    private router: Router) {
       this.form = new FormGroup({
         numberOfAssets: new FormControl()
       })
@@ -28,9 +30,19 @@ export class DetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.db.getListing(params.id)
-        .then(l => this.listing = l)
+        .then(l => {
+          this.listing = l
+          if (this.listing['userID'] === this.user.getId())
+            this.loadBookings();
+        })
         .catch(err => this.error = err.error.message)
     })
+  }
+
+  loadBookings(){
+    this.db.getListingBookings(this.listing['listingID'], this.user.getLoginToken())
+              .then(b => this.bookings = b['bookings'])
+              .catch(err => this.error = err.error.message)
   }
 
   deleteListing(id: number){
@@ -43,8 +55,19 @@ export class DetailComponent implements OnInit {
     let v = this.form.getRawValue()
     v['listingID'] = this.listing['listingID'];
     this.db.createBooking(this.user.getLoginToken(), v).then(_ => {
-      console.log("booked")
+      this.router.navigate(['/listings'], {queryParams: { bookings: true }})
     })
   }
 
+  cancelBooking(bookingId: number){
+    this.db.cancelBooking(bookingId, this.user.getLoginToken()).then(r => {
+      this.loadBookings();
+    }).catch(r => this.error = r.error.message)
+  }
+
+  confirmPayment(bookingId: number){
+    this.db.confirmPayment(bookingId, this.user.getLoginToken()).then(r => {
+      this.loadBookings();
+    }).catch(r => this.error = r.error.message)
+  }
 }
