@@ -4,7 +4,7 @@ const Listing = db.listing;
 // returns all listings
 exports.getAllListings = (req, res) => {
     Listing.findAll({
-        attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'userID']
+        attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'categories', 'userID']
     }).then(l => {
         return res.status(200).send({listings: l})
     })
@@ -16,7 +16,7 @@ exports.getAllListings = (req, res) => {
  */
 exports.getUserListings = (req, res) => {
     Listing.findAll({
-        attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'userID'],
+        attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'categories', 'userID'],
         where: {
             userID: req.query.id
         }
@@ -33,6 +33,7 @@ exports.getUserListings = (req, res) => {
  * @param startDate
  * @param price
  * @param picture // image in base64 format
+ * @param categories
  */
 exports.createListing = (req, res) => {
     Listing.create({
@@ -42,6 +43,7 @@ exports.createListing = (req, res) => {
         startDate: req.body.startDate,
         price: req.body.price,
         picture: req.body.picture,
+        categories: categories,
         userID: req.userId
     }).then(l => {
         res.send({ message: "Listing was created successfully!", listingID: l.listingID });
@@ -72,6 +74,7 @@ exports.getListing = (req, res) => {
             startDate: listing.startDate,
             price: listing.price,
             picture: listing.picture,
+            categories: listing.categories,
             userID: listing.userID
         })
     })
@@ -88,6 +91,7 @@ exports.getListing = (req, res) => {
  * @param startDate
  * @param price
  * @param picture // image in base64 format
+ * @param categories
  */
 exports.postListing = (req, res) => {
     Listing.findOne({
@@ -107,6 +111,7 @@ exports.postListing = (req, res) => {
         listing.startDate = req.body.startDate
         listing.price = req.body.price
         listing.picture = req.body.picture
+        listing.categories = req.body.categories
         listing.save().then(_ => {
             res.send({ message: "Listing was updatet successfully!" });
         }).catch(err => {

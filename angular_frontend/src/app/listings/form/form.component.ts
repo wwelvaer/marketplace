@@ -14,6 +14,7 @@ export class FormComponent implements OnInit {
   form: FormGroup;
   error: string
   listingId: number = -1;
+  categories = [];
 
   constructor(private user: UserService,
     private route: ActivatedRoute,
@@ -33,39 +34,56 @@ export class FormComponent implements OnInit {
    }
 
   ngOnInit(): void {
+
     // get url query params
     this.route.queryParamMap.subscribe(qMap => {
       // when query has 'edit' parameter, edit listing data
       let lId = qMap['params'].edit;
       if (lId){
         this.db.getListing(lId).then(l => {
-          if (this.user.getId() === l['userID']){
-            // update listingID
-            this.listingId = l['listingID']
-            // fill out form with listingdata
-            this.form.patchValue({
-              name: l['name'],
-              description: l['description'],
-              availableAssets: l['availableAssets'],
-              startDate: l['startDate'],
-              price: l['price'],
-            })
-          }
+          // update listingID
+          this.listingId = l['listingID']
+          // fill out form with listingdata
+          this.form.patchValue({
+            name: l['name'],
+            description: l['description'],
+            availableAssets: l['availableAssets'],
+            startDate: l['startDate'],
+            price: l['price'],
+          })
+          this.getCategories(l['categories']);
         })
-      }
+      } else
+        this.getCategories();
+
+    })
+  }
+
+  // get categories
+  getCategories(selected=[]){
+    this.db.getCategories().then(r => {
+      this.categories = [];
+      r['categories'].forEach(x => {
+        x['checked'] = selected.includes(x['name']);
+        this.categories.push(x)
+      });
     })
   }
 
   // onSubmit function
   createListing(){
+    // get values
+    let values = this.form.getRawValue();
+    // add selected categories
+    values['categories'] = this.categories.filter(x => x.checked).map(x => x.name)
     // create listing
     if (this.listingId < 0)
-      this.db.createListing(this.user.getLoginToken(), this.form.getRawValue()).then(r => {
+      this.db.createListing(this.user.getLoginToken(), values).then(r => {
         // go to details page
         this.router.navigateByUrl(`/listings/details/${r['listingID']}`)
       })
     else // update listing
-      this.db.postListing(this.listingId, this.user.getLoginToken(), this.form.getRawValue()).then(r => {
+      this.db.postListing(this.listingId, this.user.getLoginToken(), values).then(r => {
         // go to details page
         this.router.navigateByUrl(`/listings/details/${this.listingId}`)
       })

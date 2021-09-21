@@ -24,6 +24,16 @@ module.exports = (sequelize, Sequelize) => {
       picture: { // base64 string
         type: Sequelize.STRING
       },
+      categories: {
+        type: Sequelize.STRING,
+        get() {
+          let v = this.getDataValue('categories');
+          return v ? v.split(';') : []
+        },
+        set(val=[]) {
+          this.setDataValue('categories', val ? val.join(';'): []);
+        },
+      }
     }, {
       timestamps: false,
       freezeTableName: true,

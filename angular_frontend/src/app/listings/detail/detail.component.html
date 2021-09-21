@@ -17,6 +17,7 @@
       <p>{{ listing.description }}</p>
       <p><b>Available Assets: </b>{{ listing.availableAssets }}</p>
       <p><b>Start Date:</b> {{ listing.startDate }}</p>
+      <p><b>Categories:</b> {{ listing.categories.length > 0 ? listing.categories.join(", "): 'None' }}</p>
     </div>
     <div class="col">
       <h2>Asking Price:<b> €{{ listing.price }}</b></h2>

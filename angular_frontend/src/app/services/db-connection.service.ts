@@ -204,4 +204,8 @@ export class DbConnectionService {
   confirmPayment(bookingID: number, userToken: string){
     return this.http.get(`${this.url}/api/booking/confirmPayment?id=${bookingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
+
+  getCategories(){
+    return this.http.get(`${this.url}/api/categories`).toPromise();
+  }
 }

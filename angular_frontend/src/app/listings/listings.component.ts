@@ -10,8 +10,11 @@ import { UserService } from '../services/user.service';
 })
 export class ListingsComponent implements OnInit {
 
+  log = (x) => console.log(x)
+
   selected: Date | null; // calendar value
   listings = []
+  categories = [];
   bookings: boolean = false; // true ->  display bookingInfo; false -> display listingInfo
   searchTerm: string = ""; // searchbar value
   sortCol: number = 4; // sort dropdown index value
@@ -49,16 +52,27 @@ export class ListingsComponent implements OnInit {
   // lambda function that calculates last page
   maxPage = (listings) => Math.ceil(listings.length / this.pageLimitOption[this.pageLimitIndex])
 
-  // lambda function that filters and sorts entries using searchTerm and searchCols
-  filteredListings = () => this.listings
+  // function that filters by category and searchTerm and sorts entries using searchCols
+  filteredListings = () => {
+    let selectedCategories = this.categories.filter(x => x.selected).map(x => x.name);
+    return this.listings
+    .filter(l => selectedCategories.every(x => (l.categories).includes(x))) // categories
     .filter(u => Object.values(u).join("").toString().toLowerCase().indexOf(this.searchTerm.toString().toLowerCase()) > -1 && (!this.selected || this.selected.getTime() >= new Date(u.startDate).setHours(0, 0, 0, 0)))
     .sort(this.sortCols[this.sortCol].sortFunc)
+  }
 
   constructor(private db: DbConnectionService,
     private user: UserService,
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    // get categories
+    this.db.getCategories().then(r => {
+      r['categories'].forEach(x => {
+        x['selected'] = false;
+        this.categories.push(x)
+      });
+    })
     // get url query params
     this.route.queryParamMap.subscribe(qMap => {
       // when query has 'bookings' parameter display bookingInfo
