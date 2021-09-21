@@ -21,8 +21,6 @@
               <button type="submit" class="btn btn-primary btn-block" [disabled]="!(form.getRawValue().email && form.getRawValue().password)">LOG IN</button>
               <small *ngIf="error" class="form-text"><i style="color: red;">{{error}}</i></small>
               <a routerLink="/signup">Create a new account</a>
-              <div></div>
-              <a routerLink="/signup">Forgot password</a>
             </form>
           </div>
         </div>

@@ -75,6 +75,17 @@ export class DbConnectionService {
   }
 
   /**
+   * change password
+   * @param oldPassword
+   * @param newPassword
+   * @param userToken webtoken
+   * @returns http response promise
+   */
+  changePassword(oldPassword: string, newPassword: string, userToken: string){
+    return this.http.post(`${this.url}/api/user/changePassword`, {oldPassword: oldPassword, newPassword: newPassword}, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  /**
    * get all listings
    * @returns http response promise
    */

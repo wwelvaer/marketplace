@@ -15,7 +15,8 @@ export class SignupComponent implements OnInit {
   error: string= ""
 
   constructor(private db: DbConnectionService,
-    private route: Router) {
+    private route: Router,
+    private user: UserService) {
       // initialize form fields
       this.form = new FormGroup({
         firstName: new FormControl(),
@@ -31,15 +32,6 @@ export class SignupComponent implements OnInit {
    }
 
   ngOnInit(): void {
-  }
-
-  // calculates password strength [1-4]
-  passwordStrength(password: string): number{
-    return [
-      password.split("").reduce((t, x) => t || isNaN(+x) && x === x.toUpperCase(), false), // contains uppercase letter
-      password.split("").reduce((t, x) => t || !isNaN(+x), false), // contains number
-      password.length >= 8, // long enough
-    ].reduce((acc, x) => x ? acc + 1 : acc, 1)
   }
 
   // onSubmit function

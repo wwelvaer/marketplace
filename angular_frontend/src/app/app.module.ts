@@ -19,6 +19,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatNativeDateModule } from '@angular/material/core';
 import { DetailComponent } from './listings/detail/detail.component';
 import { FormComponent } from './listings/form/form.component';
+import { ChangePasswordComponent } from './profile/change-password/change-password.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { FormComponent } from './listings/form/form.component';
     ProfileComponent,
     ListingsComponent,
     DetailComponent,
-    FormComponent
+    FormComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,

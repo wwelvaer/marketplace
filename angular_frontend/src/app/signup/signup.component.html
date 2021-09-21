@@ -5,7 +5,7 @@
         <h1>Sign Up</h1>
         <div class="card">
           <div class="card-body">
-            <form [formGroup]="form" (ngSubmit)="signUp()">
+            <form [formGroup]="form" (ngSubmit)="signUp()" *ngIf="form.getRawValue() as f">
               <div class="form-group">
                 <label for="inputFirstName">First Name</label>
                 <input type="text" class="form-control" id="inputFirstName" placeholder="Enter First Name" formControlName="firstName">
@@ -37,8 +37,8 @@
               <div class="form-group">
                 <label for="inputPassword">Password <i style="color: red;">*</i></label>
                 <input type="password" class="form-control" id="inputPassword" placeholder="Password" formControlName="password">
-                <small *ngIf="form.getRawValue().password" class="form-text">
-                  <i *ngIf="passwordStrength(form.getRawValue().password) as strength" [style]="'color: ' + ['red', 'red', 'orange', 'green'][strength - 1]">
+                <small *ngIf="f.password" class="form-text">
+                  <i *ngIf="user.passwordStrength(f.password) as strength" [style]="'color: ' + ['red', 'red', 'orange', 'green'][strength - 1]">
                   {{'•'.repeat(strength) + " " + ['Very weak', 'Weak', 'Medium', 'Strong'][strength -1]}}
                   </i>
                 </small>
@@ -46,12 +46,10 @@
               <div class="form-group">
                 <label for="inputRepeatPassword">Repeat Password <i style="color: red;">*</i></label>
                 <input type="password" class="form-control" id="inputRepeatPassword" placeholder="Repeat Password" formControlName="repeatPassword">
-                <div *ngIf="form.getRawValue() as f">
-                  <small *ngIf="f.password && f.repeatPassword && f.password !== f.repeatPassword" class="form-text"><i style="color: red;">Passwords don't match</i></small>
-                </div>
+                <small *ngIf="f.password && f.repeatPassword && f.password !== f.repeatPassword" class="form-text"><i style="color: red;">Passwords don't match</i></small>
               </div>
               <small class="form-text"><i style="color: red;">*</i> Required</small>
-              <button type="submit" class="btn btn-primary btn-block" *ngIf="form.getRawValue() as f"
+              <button type="submit" class="btn btn-primary btn-block"
                [disabled]="!(f.email && f.password && f.repeatPassword && f.password === f.repeatPassword)">SIGN UP</button>
               <small *ngIf="error" class="form-text"><i style="color: red;">{{error}}</i></small>
               <a routerLink="/login">Already have an account? Sign In</a>

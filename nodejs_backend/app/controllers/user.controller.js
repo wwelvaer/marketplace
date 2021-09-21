@@ -1,5 +1,6 @@
 const db = require("../models");
 const User = db.user;
+var bcrypt = require("bcryptjs");
 
 /** get userdata
  * expected query param:
@@ -66,3 +67,28 @@ exports.postUserData = (req, res) => {
         });
     })
 };
+
+/**
+ * expected params in body:
+ * @param oldPassword
+ * @param newPassword
+ */
+exports.changePassword = (req, res) => {
+    // finds user using webtoken
+    User.findOne({
+    where: {
+        userID: req.userId
+    }
+    }).then(user => {
+        // catch errors
+        if (!user)
+            return res.status(404).send({ message: "No user matching webtoken found"});
+        if (!bcrypt.compareSync(req.body.oldPassword,user.authID))
+            return res.status(401).send({message: "Invalid Password"});
+        // save hashed password
+        user.authID = bcrypt.hashSync(req.body.newPassword, 8) 
+        user.save().then(_ => {
+            res.send({message: "Password updated successfully"})
+        })
+    })
+}

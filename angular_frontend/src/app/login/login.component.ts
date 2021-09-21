@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
         this.user.storeCookie = d.keepSignedIn
         // set user locally
         this.user.setUser(r)
-        this.route.navigateByUrl('/home')
+        this.route.navigateByUrl('/')
       })
       .catch(r => this.error = r.error.message);
   }
