@@ -11,6 +11,7 @@ export class UserService {
   public storeCookie: boolean = false;
 
   constructor(private cookieService: CookieService) {
+    // search for user in cookies
     let u = this.cookieService.get(this.cookieName);
     if (u)
       this.user = JSON.parse(u);
@@ -21,6 +22,7 @@ export class UserService {
   }
 
   setUser(user: User): void{
+    // store user in cookies
     if (this.storeCookie)
       this.cookieService.set(this.cookieName, JSON.stringify(user), 1);
     this.user = user;
@@ -31,6 +33,7 @@ export class UserService {
   }
 
   logOut(): void{
+    // delete user cookie
     this.cookieService.delete(this.cookieName)
     this.user = undefined;
   }
@@ -44,6 +47,7 @@ export class UserService {
   }
 }
 
+// locally stored userdata
 export interface User {
   id: number,
   firstName: string,

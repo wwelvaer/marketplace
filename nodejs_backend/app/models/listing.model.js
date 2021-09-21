@@ -21,7 +21,7 @@ module.exports = (sequelize, Sequelize) => {
       price: {
         type: Sequelize.DOUBLE
       },
-      picture: {
+      picture: { // base64 string
         type: Sequelize.STRING
       },
     }, {

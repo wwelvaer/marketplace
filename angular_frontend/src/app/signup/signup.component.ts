@@ -15,24 +15,25 @@ export class SignupComponent implements OnInit {
   error: string= ""
 
   constructor(private db: DbConnectionService,
-    private user: UserService,
     private route: Router) {
-    this.form = new FormGroup({
-      firstName: new FormControl(),
-      lastName: new FormControl(),
-      email: new FormControl(),
-      gender: new FormControl(),
-      address: new FormControl(),
-      birthDate: new FormControl(),
-      phoneNumber: new FormControl(),
-      password: new FormControl(),
-      repeatPassword: new FormControl()
-    });
+      // initialize form fields
+      this.form = new FormGroup({
+        firstName: new FormControl(),
+        lastName: new FormControl(),
+        email: new FormControl(),
+        gender: new FormControl(),
+        address: new FormControl(),
+        birthDate: new FormControl(),
+        phoneNumber: new FormControl(),
+        password: new FormControl(),
+        repeatPassword: new FormControl()
+      });
    }
 
   ngOnInit(): void {
   }
 
+  // calculates password strength [1-4]
   passwordStrength(password: string): number{
     return [
       password.split("").reduce((t, x) => t || isNaN(+x) && x === x.toUpperCase(), false), // contains uppercase letter
@@ -41,11 +42,15 @@ export class SignupComponent implements OnInit {
     ].reduce((acc, x) => x ? acc + 1 : acc, 1)
   }
 
+  // onSubmit function
   signUp(){
+    // collect form values
     let v = this.form.getRawValue();
-    delete v.repeatPassword;
+    delete v.repeatPassword; // only used for clientside verification
+    // send data
     this.db.signUp(v)
       .then(_ => {
+        // go to login page
         this.route.navigateByUrl('/login')
       })
       .catch(r => this.error = r.error.message);

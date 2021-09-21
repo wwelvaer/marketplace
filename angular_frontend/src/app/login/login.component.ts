@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   constructor(private db: DbConnectionService,
     private user: UserService,
     private route: Router) {
+    // initialize form fields
     this.form = new FormGroup({
       email: new FormControl(),
       password: new FormControl(),
@@ -27,11 +28,15 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // onSubmit function
   logIn(){
+    // collect form values
     let d = this.form.getRawValue();
+    // sign in
     this.db.signIn(d.email, d.password)
       .then((r: User) => {
         this.user.storeCookie = d.keepSignedIn
+        // set user locally
         this.user.setUser(r)
         this.route.navigateByUrl('/home')
       })

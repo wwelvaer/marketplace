@@ -17,8 +17,10 @@ export class ProfileComponent implements OnInit {
   constructor(public user: UserService,
     private route: Router,
     private db: DbConnectionService) {
+      // redirect to login page when not logged in
       if (!user.isLoggedIn())
         this.route.navigateByUrl("/login")
+      // initialize form fields
       this.form = new FormGroup({
         firstName: new FormControl(),
         lastName: new FormControl(),
@@ -31,30 +33,36 @@ export class ProfileComponent implements OnInit {
     }
 
   ngOnInit(): void {
+    // get user data
     let u = this.user.getUser();
     this.db.getUserData(u.id, u.accessToken)
       .then(user => {
         Object.keys(user).forEach(x => {
+          // fill out form with userdata
           this.form.get(x).setValue(user[x])
         })
       })
       .catch(r => this.error = r.error.message);
   }
 
+  // onSubmit function
   updateProfile(){
+    // collect new userdata
     let u = this.user.getUser(),
         v = this.form.getRawValue()
+    // send new userdata to db
     this.db.postUserData(u.id, u.accessToken, v)
-    .then(_ =>{
-      this.user.setUser({
-        id: u.id,
-        firstName: v.firstName,
-        lastName: v.lastName,
-        email: v.email,
-        accessToken: u.accessToken
+      .then(_ =>{
+        // update userdata locally
+        this.user.setUser({
+          id: u.id,
+          firstName: v.firstName,
+          lastName: v.lastName,
+          email: v.email,
+          accessToken: u.accessToken
+        })
+        this.route.navigateByUrl("/")
       })
-      this.route.navigateByUrl("/home")
-    } )
     .catch(err => this.error = err.error.message)
   }
 

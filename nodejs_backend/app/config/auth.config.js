@@ -1,4 +1,4 @@
 module.exports = {
-    // random key
+    // random key used for creating webtoken
     KEY: "cB59Da20Bd147eFc1526"
 };

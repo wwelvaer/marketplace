@@ -20,7 +20,7 @@
     </div>
     <div class="col">
       <h2>Asking Price:<b> €{{ listing.price }}</b></h2>
-      <div class="card" *ngIf="listing.userID !== user.getId()">
+      <div class="card" *ngIf="user.isLoggedIn() && listing.userID !== user.getId()">
         <div class="card-body">
           <form [formGroup]="form" (ngSubmit)="createBooking()">
             <div class="form-group">

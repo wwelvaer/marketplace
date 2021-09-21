@@ -9,12 +9,13 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./listings.component.scss']
 })
 export class ListingsComponent implements OnInit {
-  selected: Date | null;
+
+  selected: Date | null; // calendar value
   listings = []
-  bookings: boolean = false;
-  searchTerm: string = "";
-  sortCol: number = 4;
-  sortCols = [
+  bookings: boolean = false; // true ->  display bookingInfo; false -> display listingInfo
+  searchTerm: string = ""; // searchbar value
+  sortCol: number = 4; // sort dropdown index value
+  sortCols = [ // sort dropdown values + sort functions
     {
       name: 'Name: A -> Z',
       sortFunc: (a, b) => (a.name ? a.name : "").localeCompare(b.name ? b.name : "")
@@ -42,9 +43,10 @@ export class ListingsComponent implements OnInit {
     }];
 
   pageLimitOption = [10, 20, 50]
-  pageLimitIndex = 1;
+  pageLimitIndex = 1; // selected pageLimit index
   currentPage = 1;
 
+  // lambda function that calculates last page
   maxPage = (listings) => Math.ceil(listings.length / this.pageLimitOption[this.pageLimitIndex])
 
   // lambda function that filters and sorts entries using searchTerm and searchCols
@@ -57,11 +59,14 @@ export class ListingsComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    // get url query params
     this.route.queryParamMap.subscribe(qMap => {
+      // when query has 'bookings' parameter display bookingInfo
       this.bookings = !!qMap['params'].bookings
       if (this.bookings)
         this.fetchBookings();
       else {
+        // when query has 'id' parameter display listings from user with id
         let uId = qMap['params'].id;
         if (uId)
             this.db.getUserListings(uId).then(l => this.listings = l['listings'])
@@ -71,21 +76,24 @@ export class ListingsComponent implements OnInit {
     })
   }
 
+  // get bookings and sort recent to last
   fetchBookings(){
     this.db.getUserBookings(this.user.getLoginToken())
         .then(l => this.listings = l['bookings'].sort((a, b) => b.bookingID - a.bookingID).map(x => {return {...x, ...x.listing}}))
   }
 
+  // delete listing
   deleteListing(id: number){
     this.db.deleteListing(id, this.user.getLoginToken()).then(_ => {
+      // remove from list
       this.listings = this.listings.filter(x => x.listingID !== id)
     })
   }
 
+  // cancel booking
   cancelBooking(bookingID: number){
-    this.db.cancelBooking(bookingID, this.user.getLoginToken()).then(_ => this.fetchBookings())
+    this.db.cancelBooking(bookingID, this.user.getLoginToken())
+      .then(_ => this.fetchBookings()) // update bookingInfo
   }
-
-
 
 }
