@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DbConnectionService } from 'src/app/services/db-connection.service';
+import { ImageService } from 'src/app/services/image.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -11,6 +12,10 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class FormComponent implements OnInit {
 
+  fileName: string;
+  imgSrc: string;
+  imgError: string;
+
   form: FormGroup;
   error: string
   listingId: number = -1;
@@ -19,7 +24,8 @@ export class FormComponent implements OnInit {
   constructor(private user: UserService,
     private route: ActivatedRoute,
     private db: DbConnectionService,
-    private router: Router) {
+    private router: Router,
+    private image: ImageService) {
     // redirect to login page when not logged in
     if (!this.user.isLoggedIn())
         this.router.navigateByUrl("/login")
@@ -70,22 +76,43 @@ export class FormComponent implements OnInit {
     })
   }
 
+  // select file
+  fileSelected(ev){
+    // no files selected
+    if (ev.target.files.length === 0)
+      return;
+    // reset variables
+    this.imgError = undefined;
+    this.imgSrc = undefined;
+    let f: File = <File>ev.target.files[0];
+    this.fileName = f.name;
+    // convert image to standard format
+    this.image.convertFileToJpegBase64(f, (c) => {
+      this.imgSrc = c;
+    }, (err) => {
+      this.imgError = err;
+    })
+  }
+
   // onSubmit function
   createListing(){
     // get values
     let values = this.form.getRawValue();
     // add selected categories
     values['categories'] = this.categories.filter(x => x.checked).map(x => x.name)
+    // add image
+    if (this.imgSrc)
+      values['picture'] = this.imgSrc;
     // create listing
     if (this.listingId < 0)
       this.db.createListing(this.user.getLoginToken(), values).then(r => {
         // go to details page
         this.router.navigateByUrl(`/listings/details/${r['listingID']}`)
-      })
+      }).catch(err => this.error = err.error.message)
     else // update listing
       this.db.postListing(this.listingId, this.user.getLoginToken(), values).then(r => {
         // go to details page
         this.router.navigateByUrl(`/listings/details/${this.listingId}`)
-      })
+      }).catch(err => this.error = err.error.message)
   }
 }

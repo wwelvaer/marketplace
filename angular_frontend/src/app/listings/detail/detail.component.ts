@@ -4,6 +4,7 @@ import { DbConnectionService } from 'src/app/services/db-connection.service';
 import { UserService } from 'src/app/services/user.service';
 import { Location } from '@angular/common'
 import { FormControl, FormGroup } from '@angular/forms';
+import { ImageService } from 'src/app/services/image.service';
 
 @Component({
   selector: 'app-detail',
@@ -21,7 +22,8 @@ export class DetailComponent implements OnInit {
     private db : DbConnectionService,
     private user: UserService,
     private location: Location,
-    private router: Router) {
+    private router: Router,
+    public image: ImageService) {
       // initialize form field
       this.form = new FormGroup({
         numberOfAssets: new FormControl()

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DbConnectionService } from '../services/db-connection.service';
+import { ImageService } from '../services/image.service';
 import { UserService } from '../services/user.service';
 
 @Component({
@@ -9,8 +10,6 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./listings.component.scss']
 })
 export class ListingsComponent implements OnInit {
-
-  log = (x) => console.log(x)
 
   selected: Date | null; // calendar value
   listings = []
@@ -63,7 +62,8 @@ export class ListingsComponent implements OnInit {
 
   constructor(private db: DbConnectionService,
     private user: UserService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    public image: ImageService) { }
 
   ngOnInit(): void {
     // get categories
@@ -83,7 +83,7 @@ export class ListingsComponent implements OnInit {
         // when query has 'id' parameter display listings from user with id
         let uId = qMap['params'].id;
         if (uId)
-            this.db.getUserListings(uId).then(l => this.listings = l['listings'])
+            this.db.getUserListings(uId).then(l => {console.log(l); return this.listings = l['listings']})
         else
           this.db.getAllListings().then(l => this.listings = l['listings'])
       }
