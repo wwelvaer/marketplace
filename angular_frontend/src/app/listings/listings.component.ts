@@ -83,7 +83,7 @@ export class ListingsComponent implements OnInit {
         // when query has 'id' parameter display listings from user with id
         let uId = qMap['params'].id;
         if (uId)
-            this.db.getUserListings(uId).then(l => {console.log(l); return this.listings = l['listings']})
+            this.db.getUserListings(uId).then(l => this.listings = l['listings'])
         else
           this.db.getAllListings().then(l => this.listings = l['listings'])
       }
