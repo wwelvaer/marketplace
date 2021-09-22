@@ -1,5 +1,6 @@
 const db = require("../models");
 const Listing = db.listing;
+const User = db.user;
 
 // returns all listings
 exports.getAllListings = (req, res) => {
@@ -61,7 +62,9 @@ exports.getListing = (req, res) => {
     Listing.findOne({
         where: {
             listingID: req.query.id
-        }
+        },
+        // include userName extracted from user
+        include: {model: User, attributes: ['userName']},
     }).then(listing => {
         if (!listing)
             return res.status(404).send({ message: "Invalid listingID" });
@@ -75,7 +78,8 @@ exports.getListing = (req, res) => {
             price: listing.price,
             picture: listing.picture,
             categories: listing.categories,
-            userID: listing.userID
+            userID: listing.userID,
+            userName: listing.user.userName
         })
     })
     

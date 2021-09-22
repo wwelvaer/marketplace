@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
     private route: Router) {
     // initialize form fields
     this.form = new FormGroup({
-      email: new FormControl(),
+      login: new FormControl(),
       password: new FormControl(),
       keepSignedIn: new FormControl()
     });
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
     // collect form values
     let d = this.form.getRawValue();
     // sign in
-    this.db.signIn(d.email, d.password)
+    this.db.signIn(d.login, d.password)
       .then((r: User) => {
         this.user.storeCookie = d.keepSignedIn
         // set user locally

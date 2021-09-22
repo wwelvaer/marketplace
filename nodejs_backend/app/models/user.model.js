@@ -13,10 +13,17 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING
       },
       authID: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        isEmail: true
+      },
+      userName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
       gender: {
         type: Sequelize.STRING(7)

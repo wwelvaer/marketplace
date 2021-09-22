@@ -21,6 +21,7 @@ exports.getUserData = (req, res) => {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
+            userName: user.userName,
             gender: user.gender,
             address: user.address,
             birthDate: user.birthDate,
@@ -36,6 +37,7 @@ exports.getUserData = (req, res) => {
  * @param firstName
  * @param lastName
  * @param email
+ * @param userName
  * @param gender
  * @param address
  * @param birthDate
@@ -55,6 +57,7 @@ exports.postUserData = (req, res) => {
         user.firstName = req.body.firstName;
         user.lastName = req.body.lastName;
         user.email = req.body.email;
+        user.userName = req.body.userName;
         user.gender = req.body.gender;
         user.address = req.body.address;
         user.birthDate = req.body.birthDate;

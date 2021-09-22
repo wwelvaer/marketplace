@@ -21,12 +21,12 @@ export class DbConnectionService {
 
   /**
    * sign user in
-   * @param email
+   * @param login
    * @param password
    * @returns http response promise
    */
-  signIn(email: string, password: string){
-    return this.http.post(`${this.url}/api/auth/signin`, {'email': email, 'password': password}).toPromise();
+  signIn(login: string, password: string){
+    return this.http.post(`${this.url}/api/auth/signin`, {'login': login, 'password': password}).toPromise();
   }
 
   /**

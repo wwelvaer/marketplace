@@ -25,6 +25,7 @@ export class ProfileComponent implements OnInit {
         firstName: new FormControl(),
         lastName: new FormControl(),
         email: new FormControl(),
+        userName: new FormControl(),
         gender: new FormControl(),
         address: new FormControl(),
         birthDate: new FormControl(),
@@ -34,8 +35,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     // get user data
-    let u = this.user.getUser();
-    this.db.getUserData(u.id, u.accessToken)
+    this.db.getUserData(this.user.getId(), this.user.getLoginToken())
       .then(user => {
         Object.keys(user).forEach(x => {
           // fill out form with userdata
@@ -48,18 +48,15 @@ export class ProfileComponent implements OnInit {
   // onSubmit function
   updateProfile(){
     // collect new userdata
-    let u = this.user.getUser(),
-        v = this.form.getRawValue()
+    let v = this.form.getRawValue()
     // send new userdata to db
-    this.db.postUserData(u.id, u.accessToken, v)
+    this.db.postUserData(this.user.getId(), this.user.getLoginToken(), v)
       .then(_ =>{
         // update userdata locally
         this.user.setUser({
-          id: u.id,
-          firstName: v.firstName,
-          lastName: v.lastName,
-          email: v.email,
-          accessToken: u.accessToken
+          id: this.user.getId(),
+          userName: v.userName,
+          accessToken: this.user.getLoginToken()
         })
         this.route.navigateByUrl("/")
       })

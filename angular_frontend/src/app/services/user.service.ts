@@ -28,10 +28,6 @@ export class UserService {
     this.user = user;
   }
 
-  getUser(): User | undefined{
-    return this.user;
-  }
-
   logOut(): void{
     // delete user cookie
     this.cookieService.delete(this.cookieName)
@@ -44,6 +40,10 @@ export class UserService {
 
   getId(): number {
     return this.user ? this.user.id : -1
+  }
+
+  getUserName(): string {
+    return this.user ? this.user.userName : ""
   }
 
   // calculates password strength [1-4]
@@ -59,8 +59,6 @@ export class UserService {
 // locally stored userdata
 export interface User {
   id: number,
-  firstName: string,
-  lastName: string,
-  email: string,
+  userName: string,
   accessToken: string
 }

@@ -7,8 +7,8 @@
           <div class="card-body">
             <form [formGroup]="form" (ngSubmit)="logIn()">
               <div class="form-group">
-                <label for="inputEmail">Email address</label>
-                <input type="email" class="form-control" id="inputEmail" placeholder="Enter email" formControlName="email">
+                <label for="inputEmail">Email address / Username</label>
+                <input type="text" class="form-control" id="inputEmail" placeholder="Enter Email / Username" formControlName="login">
               </div>
               <div class="form-group">
                 <label for="inputPassword">Password</label>
@@ -18,7 +18,7 @@
                 <input type="checkbox" class="form-check-input" id="checkBox" formControlName="keepSignedIn">
                 <label class="form-check-label" for="checkBox">Keep me signed in</label>
               </div>
-              <button type="submit" class="btn btn-primary btn-block" [disabled]="!(form.getRawValue().email && form.getRawValue().password)">LOG IN</button>
+              <button type="submit" class="btn btn-primary btn-block" [disabled]="!(form.getRawValue().login && form.getRawValue().password)">LOG IN</button>
               <small *ngIf="error" class="form-text"><i style="color: red;">{{error}}</i></small>
               <a routerLink="/signup">Create a new account</a>
             </form>

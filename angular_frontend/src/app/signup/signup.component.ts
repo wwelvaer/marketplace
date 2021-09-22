@@ -22,6 +22,7 @@ export class SignupComponent implements OnInit {
         firstName: new FormControl(),
         lastName: new FormControl(),
         email: new FormControl(),
+        userName: new FormControl(),
         gender: new FormControl(),
         address: new FormControl(),
         birthDate: new FormControl(),
