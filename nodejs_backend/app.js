@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const PORT = 3000;
 
@@ -8,10 +7,10 @@ const app = express();
 app.use(cors());
 
 // parse requests of content-type - application/json
-app.use(bodyParser.json());
+app.use(express.json({limit: '5mb'}));
 
 // parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
 

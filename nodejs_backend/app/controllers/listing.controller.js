@@ -115,7 +115,7 @@ exports.postListing = (req, res) => {
         listing.save().then(_ => {
             res.send({ message: "Listing was updatet successfully!" });
         }).catch(err => {
-            res.send({ message: "Listing couldn't be updated" , err: err})
+            res.status(500).send({ message: err.message})
         });
     })
 };

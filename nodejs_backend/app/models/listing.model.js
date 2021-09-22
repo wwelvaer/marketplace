@@ -22,7 +22,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DOUBLE
       },
       picture: { // base64 string
-        type: Sequelize.STRING
+        type: Sequelize.TEXT('long')
       },
       categories: {
         type: Sequelize.STRING,
