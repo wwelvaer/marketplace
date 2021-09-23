@@ -5,9 +5,9 @@ import { Injectable } from '@angular/core';
 })
 export class ImageService {
 
-  standardWidth: number = 572;
-  standardHeight: number = 360;
-  standardQuality: number = 1;
+  standardWidth: number = 572; // max width of image that will be used
+  standardHeight: number = 360; // max height of image that will be used
+  standardQuality: number = 1; // [0-1]
 
   constructor() { }
 
@@ -30,7 +30,6 @@ export class ImageService {
         cvs.getContext("2d").drawImage(img, 0, 0, img.width, img.height, 0, 0, this.standardWidth, this.standardHeight);
         // convert to JPEG
         var newImageData = cvs.toDataURL("image/jpeg", this.standardQuality);
-        console.log(newImageData)
         callback(newImageData)
       }
       img.src = event.target.result;
