@@ -24,24 +24,24 @@
       <h2>Asking Price:<b> €{{ listing.price }}</b></h2>
       <div class="card" *ngIf="user.isLoggedIn() && listing.userID !== user.getId()">
         <div class="card-body">
-          <form [formGroup]="form" (ngSubmit)="createBooking()">
+          <form [formGroup]="form" (ngSubmit)="createTransaction()">
             <div class="form-group">
               <label for="inputNumberOfAssets">Number Of Assets</label>
               <input type="number" min=1 class="form-control" id="inputNumberOfAssets" placeholder="Enter Number Of Assets" formControlName="numberOfAssets">
             </div>
-            <button type="submit" class="btn btn-primary btn-block" *ngIf="form.getRawValue() as f" [disabled]="!f.numberOfAssets">BOOK</button>
+            <button type="submit" class="btn btn-primary btn-block" *ngIf="form.getRawValue() as f" [disabled]="!f.numberOfAssets">Make Transaction</button>
           </form>
         </div>
       </div>
     </div>
   </div>
   <div *ngIf="listing.userID === user.getId()">
-    <h2>Bookings</h2>
-    <div *ngIf="bookings.length > 0">
+    <h2>Transactions</h2>
+    <div *ngIf="transactions.length > 0">
       <table class="table" style="margin-bottom: 20px;">
         <thead class="thead-light">
           <tr>
-            <th scope="col">Booker</th>
+            <th scope="col">Customer</th>
             <th scope="col"># Assets</th>
             <th scope="col">Price</th>
             <th scope="col">Status</th>
@@ -49,23 +49,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let b of bookings">
+          <tr *ngFor="let b of transactions">
             <th scope="row">{{b.user.name}}</th>
             <td>{{b.numberOfAssets}}</td>
             <td>€{{b.numberOfAssets * b.pricePerAsset}}</td>
             <td>{{b.status}}</td>
             <td>
               <div class="btn-group" role="group" *ngIf="b.status !== 'cancelled'">
-                <button type="button" *ngIf="b.status !== 'payed'" class="btn btn-lg btn-success" (click)="confirmPayment(b.bookingID)">Confirm Payment</button>
-                <button type="button" class="btn btn-lg btn-danger" (click)="cancelBooking(b.bookingID)">Cancel</button>
+                <button type="button" *ngIf="b.status !== 'payed'" class="btn btn-lg btn-success" (click)="confirmPayment(b.transactionID)">Confirm Payment</button>
+                <button type="button" class="btn btn-lg btn-danger" (click)="cancelTransaction(b.transactionID)">Cancel</button>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div *ngIf="bookings.length === 0">
-      No one has booked yet
+    <div *ngIf="transactions.length === 0">
+      No one has make a transaction yet
     </div>
   </div>
 </div>

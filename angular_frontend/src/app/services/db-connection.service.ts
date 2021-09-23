@@ -155,54 +155,54 @@ export class DbConnectionService {
   }
 
   /**
-   * get all bookings on a given listing
+   * get all transactions on a given listing
    * @param listingID listingID
    * @param userToken webtoken
    * @returns http response promise
    */
-  getListingBookings(listingID: number, userToken: string){
-    return this.http.get(`${this.url}/api/bookings/listing?id=${listingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  getListingTransactions(listingID: number, userToken: string){
+    return this.http.get(`${this.url}/api/transactions/listing?id=${listingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
   /**
-   * get all bookings made by given user
+   * get all transactions made by given user
    * @param userToken webtoken
    * @returns http response promise
    */
-  getUserBookings(userToken: string){
-    return this.http.get(`${this.url}/api/bookings/user`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  getUserTransactions(userToken: string){
+    return this.http.get(`${this.url}/api/transactions/user`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
   /**
-   * create booking
+   * create transaction
    * @param userToken webtoken
    * @param fields
    *  @field listingID
    *  @field numberOfAssets
    * @returns http response promise
    */
-  createBooking(userToken: string, fields: Object){
-    return this.http.post(`${this.url}/api/booking/create`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
+  createTransaction(userToken: string, fields: Object){
+    return this.http.post(`${this.url}/api/transaction/create`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
   /**
-   * cancels booking (doesn't delete)
-   * @param bookingID bookingID
+   * cancels transaction (doesn't delete)
+   * @param transactionID transactionID
    * @param userToken webtoken
    * @returns http response promise
    */
-  cancelBooking(bookingID: number, userToken: string){
-    return this.http.get(`${this.url}/api/booking/cancel?id=${bookingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  cancelTransaction(transactionID: number, userToken: string){
+    return this.http.get(`${this.url}/api/transaction/cancel?id=${transactionID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
   /**
-   * confirm payment of booking
-   * @param bookingID bookingID
+   * confirm payment of transaction
+   * @param transactionID transactionID
    * @param userToken webtoken
    * @returns http response promise
    */
-  confirmPayment(bookingID: number, userToken: string){
-    return this.http.get(`${this.url}/api/booking/confirmPayment?id=${bookingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  confirmPayment(transactionID: number, userToken: string){
+    return this.http.get(`${this.url}/api/transaction/confirmPayment?id=${transactionID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
   // get all categories

@@ -1,5 +1,5 @@
 const { authJwt } = require("../middleware");
-const controller = require("../controllers/booking.controller");
+const controller = require("../controllers/transaction.controller");
 
 module.exports = function(app) {
     app.use(function(req, res, next) {
@@ -11,31 +11,31 @@ module.exports = function(app) {
     });
 
     app.get(
-      "/api/bookings/listing",
+      "/api/transactions/listing",
       [authJwt.verifyToken],
-      controller.getListingBookings
+      controller.getListingTransactions
     );
   
     app.get(
-      "/api/bookings/user",
+      "/api/transactions/user",
       [authJwt.verifyToken],
-      controller.getUserBookings
+      controller.getUserTransactions
     );
   
     app.post(
-      "/api/booking/create",
+      "/api/transaction/create",
       [authJwt.verifyToken],
-      controller.createBooking
+      controller.createTransaction
     );
 
     app.get(
-      "/api/booking/cancel",
+      "/api/transaction/cancel",
       [authJwt.verifyToken],
-      controller.cancelBooking
+      controller.cancelTransaction
     );
 
     app.get(
-      "/api/booking/confirmPayment",
+      "/api/transaction/confirmPayment",
       [authJwt.verifyToken],
       controller.confirmPayment
     );

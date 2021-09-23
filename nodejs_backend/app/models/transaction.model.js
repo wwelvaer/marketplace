@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => { // rename
-    const Booking = sequelize.define("booking", {
-      bookingID: {
+    const Transaction = sequelize.define("transaction", {
+      transactionID: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
@@ -19,5 +19,5 @@ module.exports = (sequelize, Sequelize) => { // rename
       timestamps: false,
       freezeTableName: true,
     });
-    return Booking;
+    return Transaction;
   };

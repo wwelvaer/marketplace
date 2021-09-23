@@ -1,13 +1,13 @@
 const db = require("../models");
-const Booking = db.booking;
+const Transaction = db.transaction;
 const Listing = db.listing;
 const User = db.user;
 
-/** get all bookings on a given listingid
+/** get all transactions on a given listingid
  * expected Query param:
  * @param id listingID 
  */
-exports.getListingBookings = (req, res) => {
+exports.getListingTransactions = (req, res) => {
     // find listing
     Listing.findOne({
         where: {
@@ -18,9 +18,9 @@ exports.getListingBookings = (req, res) => {
         if (!listing)
             return res.status(404).send({ message: "Invalid listingID" });
         if (listing.userID !== req.userId)
-            return res.status(401).send({ message: "Unauthorized to view another user's bookings on his listings"});
-        // find all bookings
-        Booking.findAll({
+            return res.status(401).send({ message: "Unauthorized to view another user's transactions on his listings"});
+        // find all transactions
+        Transaction.findAll({
             where: {
                 listingID: listing.listingID
             },
@@ -28,31 +28,31 @@ exports.getListingBookings = (req, res) => {
             include: {model: User, attributes: ['userID', [db.sequelize.literal("CASE WHEN firstName = '' AND lastName = '' THEN email ELSE CONCAT(firstName, ' ', lastName) END"), 'name']]},
         }).then(b => {
             // send data
-            return res.status(200).send({bookings: b})
+            return res.status(200).send({transactions: b})
         })
     })
 };
 
-// get all bookings made by given user
-exports.getUserBookings = (req, res) => {
-    Booking.findAll({
+// get all transactions made by given user
+exports.getUserTransactions = (req, res) => {
+    Transaction.findAll({
         where: {
-            bookerID: req.userId // get user from webtoken
+            customerID: req.userId // get user from webtoken
         },
         // include listingdata
         include: {model: Listing, attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'userID']},
     }).then(b => {
         // send data
-        return res.status(200).send({bookings: b})
+        return res.status(200).send({transactions: b})
     })
 };
 
-/** creates booking
+/** creates transaction
  * expected params in body:
  * @param listingID
  * @param numberOfAssets
  */
-exports.createBooking = (req, res) => {
+exports.createTransaction = (req, res) => {
     // find listing
     Listing.findOne({
         where: {
@@ -66,18 +66,18 @@ exports.createBooking = (req, res) => {
             return res.status(400).send({ message: "Number of assets not given"});
         if (listing.availableAssets < req.body.numberOfAssets)
             return res.status(400).send({ message: "Not enough assets available" });
-        // create booking
-        Booking.create({
+        // create transaction
+        Transaction.create({
             numberOfAssets: req.body.numberOfAssets,
             pricePerAsset: listing.price,
-            bookerID: req.userId, // get user from webtoken
+            customerID: req.userId, // get user from webtoken
             status: 'reserved',
             listingID: listing.listingID
         }).then(b => {
             // update listing's available assets
             listing.availableAssets -= b.numberOfAssets;
             listing.save().then(l => {
-                res.send({ message: "Booking was created successfully!", bookingID: b.bookingID });
+                res.send({ message: "Transaction was created successfully!", customerID: b.customerID });
             })
         })
         .catch(err => {
@@ -86,69 +86,69 @@ exports.createBooking = (req, res) => {
     })
 }
 
-/** cancels booking (doesn't delete)
+/** cancels transaction (doesn't delete)
  * expected query param:
- * @param id bookingID 
+ * @param id transactionID 
  */
-exports.cancelBooking = (req, res) => {
-    // find booking
-    Booking.findOne({
+exports.cancelTransaction = (req, res) => {
+    // find transaction
+    Transaction.findOne({
         where: {
-            bookingID: req.query.id
+            transactionID: req.query.id
         },
         // include userID extracted from listing
         include: {model: Listing, attributes: ['userID']},
-    }).then(booking => {
+    }).then(transaction => {
         // catch errors
-        if (!booking)
-            return res.status(404).send({ message: "Invalid bookingID" });
+        if (!transaction)
+            return res.status(404).send({ message: "Invalid transactionID" });
         // compare user from webtoken with data
-        if (req.userId !== booking.bookerID && req.userId !== booking.listing.userID) 
-            return res.status(401).send({ message: "Unauthorized to cancel booking"});
+        if (req.userId !== transaction.transactionID && req.userId !== transaction.listing.userID) 
+            return res.status(401).send({ message: "Unauthorized to cancel transaction"});
         // find listing
         Listing.findOne({
             where: {
-                listingID: booking.listingID
+                listingID: transaction.listingID
             }
         }).then(listing => {
             // catch error
             if (!listing)
-                return res.status(404).send({ message: "Booking has invalid listingID" });
+                return res.status(404).send({ message: "Transaction has invalid listingID" });
             // update listing's available assets
-            listing.availableAssets += booking.numberOfAssets;
+            listing.availableAssets += transaction.numberOfAssets;
             listing.save().then(_ => {
-                // update booking's status
-                booking.status = 'cancelled';
-                booking.save().then(_ => {
-                    res.send({ message: "Booking was cancelled successfully!" });
+                // update transaction status
+                transaction.status = 'cancelled';
+                transaction.save().then(_ => {
+                    res.send({ message: "Transaction was cancelled successfully!" });
                 })
             })
         })
     })
 }
 
-/** confirm payment of booking
+/** confirm payment of transaction
  * expected query param:
- * @param id bookingID 
+ * @param id transactionID 
  */
 exports.confirmPayment = (req, res) => {
-    // find booking
-    Booking.findOne({
+    // find transaction
+    Transaction.findOne({
         where: {
-            bookingID: req.query.id
+            transactionID: req.query.id
         },
         // include userID extracted from listing
         include: {model: Listing, attributes: ['userID']},
-    }).then(booking => {
+    }).then(transaction => {
         // catch errors
-        if (!booking)
-            return res.status(404).send({ message: "Invalid bookingID" });
+        if (!transaction)
+            return res.status(404).send({ message: "Invalid transactionID" });
         // compare user from webtoken with data 
-        if (req.userId !== booking.listing.userID)
+        if (req.userId !== transaction.listing.userID)
             return res.status(401).send({ message: "Unauthorized to confirm payment"});
-        // update booking's status
-        booking.status = 'payed';
-        booking.save().then(_ => {
+        // update transaction's status
+        transaction.status = 'payed';
+        transaction.save().then(_ => {
             res.send({ message: "Payment was confirmed successfully!" });
         }) 
     })

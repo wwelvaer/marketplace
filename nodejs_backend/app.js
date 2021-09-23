@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
 require('./app/routes/listing.routes')(app);
-require('./app/routes/booking.routes')(app);
+require('./app/routes/transaction.routes')(app);
 require('./app/routes/category.routes')(app);
 
 // listen for requests

@@ -1,6 +1,6 @@
 <div style="margin: 10px;">
   <div class="row" *ngIf="filteredListings() as lst">
-    <div class="col-3" *ngIf="!bookings">
+    <div class="col-3" *ngIf="!transactions">
       <mat-card style="width: 100%;padding-top: 0px">
         <mat-calendar [selected]="selected" (selectedChange)="selected = $event"></mat-calendar>
       </mat-card>
@@ -27,7 +27,7 @@
               <input type="text" placeholder="Search"  class="form-control" [(ngModel)]="searchTerm">
             </div>
           </div>
-          <div class="col-auto" *ngIf="!bookings">
+          <div class="col-auto" *ngIf="!transactions">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <label class="input-group-text" for="inputGroupSelect01">Order By</label>
@@ -80,21 +80,21 @@
                     <div class="row no-gutters">
                       <div class="col" [routerLink]="['/listings', 'details', l.listingID]">
                         <h5 class="card-title">{{l.name}}</h5>
-                        <p *ngIf="!bookings">Available Assets: <b>{{l.availableAssets}}</b></p>
-                        <p *ngIf="bookings">Number of Assets: <b>{{l.numberOfAssets}}</b></p>
-                        <p *ngIf="!bookings">Start Date: <b>{{l.startDate}}</b></p>
-                        <p *ngIf="bookings">Price: <b>€{{l.pricePerAsset * l.numberOfAssets}}</b></p>
-                        <p *ngIf="bookings">Status: <b>{{l.status}}</b></p>
+                        <p *ngIf="!transactions">Available Assets: <b>{{l.availableAssets}}</b></p>
+                        <p *ngIf="transactions">Number of Assets: <b>{{l.numberOfAssets}}</b></p>
+                        <p *ngIf="!transactions">Start Date: <b>{{l.startDate}}</b></p>
+                        <p *ngIf="transactions">Price: <b>€{{l.pricePerAsset * l.numberOfAssets}}</b></p>
+                        <p *ngIf="transactions">Status: <b>{{l.status}}</b></p>
                       </div>
-                      <div class="col-auto" *ngIf="!bookings">
+                      <div class="col-auto" *ngIf="!transactions">
                         <h2 ><i>€ {{l.price}}</i></h2>
                         <div *ngIf="user.getId() === l.userID" class="btn-group special" role="group" aria-label="..." style="padding:5px;">
                           <button type="button" class="btn btn-success" routerLink="/listings/form" [queryParams]="{edit: l.listingID}">✏️</button>
                           <button type="button" class="btn btn-danger" (click)="deleteListing(l.listingID)">🗑️</button>
                         </div>
                       </div>
-                      <div class="col-auto" *ngIf="bookings && l.status !== 'cancelled'">
-                        <button type="button" class="btn btn-danger" (click)="cancelBooking(l.bookingID)">CANCEL</button>
+                      <div class="col-auto" *ngIf="transactions && l.status !== 'cancelled'">
+                        <button type="button" class="btn btn-danger" (click)="cancelTransaction(l.transactionID)">CANCEL</button>
                       </div>
                     </div>
                   </div>

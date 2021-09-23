@@ -14,7 +14,7 @@
         <a class="nav-link" routerLink="/listings" [queryParams]="{id: user.getId()}">My Listings</a>
       </li>
       <li class="nav-item" *ngIf="user.isLoggedIn()">
-        <a class="nav-link" routerLink="/listings" [queryParams]="{bookings: true}">My Bookings</a>
+        <a class="nav-link" routerLink="/listings" [queryParams]="{transactions: true}">My Transactions</a>
       </li>
     </ul>
     <ul class="navbar-nav my-2 my-lg-0" *ngIf="!user.isLoggedIn()">
