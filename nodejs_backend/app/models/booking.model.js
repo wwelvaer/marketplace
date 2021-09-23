@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+module.exports = (sequelize, Sequelize) => { // rename
     const Booking = sequelize.define("booking", {
       bookingID: {
         type: Sequelize.INTEGER,

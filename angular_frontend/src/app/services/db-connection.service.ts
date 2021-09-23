@@ -205,7 +205,37 @@ export class DbConnectionService {
     return this.http.get(`${this.url}/api/booking/confirmPayment?id=${bookingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
+  // get all categories
   getCategories(){
     return this.http.get(`${this.url}/api/categories`).toPromise();
+  }
+
+  /**
+   * delete category
+   * @param name category name
+   * @returns http response promise
+   */
+  deleteCategory(name: string){
+    return this.http.post(`${this.url}/api/category/delete`, {name: name}).toPromise();
+  }
+
+  /**
+   * delete categories with type
+   * @param type category type
+   * @returns http response promise
+   */
+  deleteCategoryType(type: string){
+    return this.http.post(`${this.url}/api/category/deleteType`, {type: type}).toPromise();
+  }
+
+  /**
+   * create category
+   * @param fields
+   *  @field name (required)
+   *  @field type
+   * @returns http response promise
+   */
+  createCategory(fields: object){
+    return this.http.post(`${this.url}/api/category/create`, fields).toPromise();
   }
 }

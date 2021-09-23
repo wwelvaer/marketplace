@@ -13,5 +13,7 @@ module.exports = function(app) {
 
     app.post("/api/category/create", controller.createCategory);
 
-    app.post("/api/category/delete", controller.createCategory);
+    app.post("/api/category/delete", controller.deleteCategory);
+
+    app.post("/api/category/deleteType", controller.deleteCategoryType);
 }

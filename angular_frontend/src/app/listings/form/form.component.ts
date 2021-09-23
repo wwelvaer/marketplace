@@ -68,11 +68,9 @@ export class FormComponent implements OnInit {
   // get categories
   getCategories(selected=[]){
     this.db.getCategories().then(r => {
-      this.categories = [];
-      r['categories'].forEach(x => {
-        x['checked'] = selected.includes(x['name']);
-        this.categories.push(x)
-      });
+      this.categories = Object.entries(r).map(([k, v]) => [k, v.map((x => {
+        return {name: x, selected: selected.includes(x)}
+      }))])
     })
   }
 
@@ -99,7 +97,7 @@ export class FormComponent implements OnInit {
     // get values
     let values = this.form.getRawValue();
     // add selected categories
-    values['categories'] = this.categories.filter(x => x.checked).map(x => x.name)
+    values['categories'] = this.categories.map(x => x[1]).reduce((acc, val) => acc.concat(val), []).filter(x => x.selected).map(x => x.name)
     // add image
     if (this.imgSrc)
       values['picture'] = this.imgSrc;

@@ -6,6 +6,9 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         unique: true
       },
+      type: {
+        type: Sequelize.STRING,
+      },
     }, {
       timestamps: false,
       freezeTableName: true,

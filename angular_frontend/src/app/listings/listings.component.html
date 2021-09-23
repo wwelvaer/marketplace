@@ -6,11 +6,14 @@
       </mat-card>
       <button *ngIf="selected" type="button" class="btn btn-outline-danger btn-block" (click)="selected = null">Clear Date Selection</button>
       <h2 class="display-4" style="margin-top: 10px;">Categories:</h2>
-      <div class="btn-group-toggle btn-group-vertical" data-toggle="buttons" style="width: 100%;">
-        <label *ngFor="let c of categories" class="btn btn-outline-dark btn-block" [for]="c.name">
-          <input type="checkbox" class="btn-check" [id]="c.name" autocomplete="off" [(ngModel)]="c.selected">
-          {{c.name + (c.selected ? ' ✔' : '')}}
-        </label>
+      <div *ngFor="let category of categories">
+        <h4 class="display-6" style="margin-top: 10px;">{{category[0]}}</h4>
+        <div class="btn-group-toggle btn-group-vertical" data-toggle="buttons" style="width: 100%;">
+          <label *ngFor="let c of category[1]" class="btn btn-outline-dark btn-block" [for]="c.name">
+            <input type="checkbox" class="btn-check" [id]="c.name" autocomplete="off" [(ngModel)]="c.selected">
+            {{c.name + (c.selected ? ' ✔' : '')}}
+          </label>
+        </div>
       </div>
     </div>
     <div class="col">

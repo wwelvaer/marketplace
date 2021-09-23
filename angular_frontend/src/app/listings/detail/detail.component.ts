@@ -36,10 +36,20 @@ export class DetailComponent implements OnInit {
       // get listingdata
       this.db.getListing(params.id)
         .then(l => {
-          this.listing = l
-          // if listing if made by logged in user show bookings
-          if (this.listing['userID'] === this.user.getId())
-            this.loadBookings();
+          this.db.getCategories().then(c => {
+            let categories = []
+            Object.entries(c).forEach(([k, v]) => {
+              let v2 = v.filter(x => l["categories"].includes(x));
+              if (v2.length > 0)
+                categories.push([k, v2])
+            })
+            this.listing = l
+            this.listing['categories'] = categories;
+            // if listing if made by logged in user show bookings
+            if (this.listing['userID'] === this.user.getId())
+              this.loadBookings();
+          })
+
         })
         .catch(err => this.error = err.error.message)
     })

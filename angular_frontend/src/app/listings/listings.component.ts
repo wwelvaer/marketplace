@@ -53,7 +53,7 @@ export class ListingsComponent implements OnInit {
 
   // function that filters by category and searchTerm and sorts entries using searchCols
   filteredListings = () => {
-    let selectedCategories = this.categories.filter(x => x.selected).map(x => x.name);
+    let selectedCategories = this.categories.map(x => x[1]).reduce((acc, val) => acc.concat(val), []).filter(x => x.selected).map(x => x.name);
     return this.listings
     .filter(l => selectedCategories.every(x => (l.categories).includes(x))) // categories
     .filter(u => Object.values(u).join("").toString().toLowerCase().indexOf(this.searchTerm.toString().toLowerCase()) > -1 && (!this.selected || this.selected.getTime() >= new Date(u.startDate).setHours(0, 0, 0, 0)))
@@ -68,10 +68,9 @@ export class ListingsComponent implements OnInit {
   ngOnInit(): void {
     // get categories
     this.db.getCategories().then(r => {
-      r['categories'].forEach(x => {
-        x['selected'] = false;
-        this.categories.push(x)
-      });
+      this.categories = Object.entries(r).map(([k, v]) => [k, v.map((x => {
+        return {name: x, selected: false}
+      }))])
     })
     // get url query params
     this.route.queryParamMap.subscribe(qMap => {

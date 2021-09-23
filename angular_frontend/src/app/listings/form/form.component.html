@@ -46,24 +46,24 @@
                 </div>
                 <small *ngIf="imgError" class="form-text"><i style="color: red;">{{imgError}}</i></small>
               </div>
-
-              <small class="form-text"><i style="color: red;">*</i> Required</small>
-              <button type="submit" class="btn btn-primary btn-block" *ngIf="form.getRawValue() as f" [disabled]="!(f.name && f.price)">{{listingId < 0 ? 'Create Listing' : 'Edit Listing'}}</button>
-              <small *ngIf="error" class="form-text"><i style="color: red;">{{error}}</i></small>
             </form>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Categories</h5>
-            <div class="form-check" *ngFor="let c of categories">
-              <input class="form-check-input" type="checkbox" [id]="c.name" [(ngModel)]="c.checked">
-              <label class="form-check-label" [for]="c.name">
-                {{c.name}}
-              </label>
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Categories</h5>
+                <div *ngFor="let category of categories">
+                  <h6 style="margin-top: 10px;">{{category[0]}}</h6>
+                  <div class="form-check" *ngFor="let c of category[1]">
+                    <input class="form-check-input" type="checkbox" [id]="c.name" [(ngModel)]="c.selected">
+                    <label class="form-check-label" [for]="c.name">
+                      {{c.name}}
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
+            <small class="form-text"><i style="color: red;">*</i> Required</small>
+            <button type="submit" (click)="createListing()" class="btn btn-primary btn-block" *ngIf="form.getRawValue() as f" [disabled]="!(f.name && f.price)">{{listingId < 0 ? 'Create Listing' : 'Edit Listing'}}</button>
+            <small *ngIf="error" class="form-text"><i style="color: red;">{{error}}</i></small>
           </div>
         </div>
       </div>
