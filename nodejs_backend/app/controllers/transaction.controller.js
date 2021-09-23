@@ -76,7 +76,7 @@ exports.createTransaction = (req, res) => {
         }).then(b => {
             // update listing's available assets
             listing.availableAssets -= b.numberOfAssets;
-            listing.save().then(l => {
+            listing.save().then(() => {
                 res.send({ message: "Transaction was created successfully!", customerID: b.customerID });
             })
         })
@@ -119,6 +119,7 @@ exports.cancelTransaction = (req, res) => {
             listing.save().then(_ => {
                 // update transaction status
                 transaction.status = 'cancelled';
+                // TODO notification to other user of transaction
                 transaction.save().then(_ => {
                     res.send({ message: "Transaction was cancelled successfully!" });
                 })
@@ -148,6 +149,7 @@ exports.confirmPayment = (req, res) => {
             return res.status(401).send({ message: "Unauthorized to confirm payment"});
         // update transaction's status
         transaction.status = 'payed';
+        // TODO notification
         transaction.save().then(_ => {
             res.send({ message: "Payment was confirmed successfully!" });
         }) 

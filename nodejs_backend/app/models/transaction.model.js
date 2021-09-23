@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => { // rename
+module.exports = (sequelize, Sequelize) => {
     const Transaction = sequelize.define("transaction", {
       transactionID: {
         type: Sequelize.INTEGER,

@@ -33,6 +33,10 @@ module.exports = (sequelize, Sequelize) => {
         set(val=[]) {
           this.setDataValue('categories', val ? val.join(';'): []);
         },
+      },
+      status: {
+        type: Sequelize.ENUM('active', 'cancelled'),
+        default: 'active'
       }
     }, {
       timestamps: false,

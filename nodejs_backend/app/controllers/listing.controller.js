@@ -1,11 +1,14 @@
 const db = require("../models");
 const Listing = db.listing;
+const Transaction = db.transaction;
 const User = db.user;
 
 // returns all listings
 exports.getAllListings = (req, res) => {
     Listing.findAll({
-        attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'categories', 'userID']
+        where: {
+            status: 'active'
+        },
     }).then(l => {
         return res.status(200).send({listings: l})
     })
@@ -17,7 +20,6 @@ exports.getAllListings = (req, res) => {
  */
 exports.getUserListings = (req, res) => {
     Listing.findAll({
-        attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'categories', 'userID'],
         where: {
             userID: req.query.id
         }
@@ -44,7 +46,7 @@ exports.createListing = (req, res) => {
         startDate: req.body.startDate,
         price: req.body.price,
         picture: req.body.picture,
-        categories: categories,
+        categories: req.body.categories,
         userID: req.userId
     }).then(l => {
         res.send({ message: "Listing was created successfully!", listingID: l.listingID });
@@ -78,6 +80,7 @@ exports.getListing = (req, res) => {
             price: listing.price,
             picture: listing.picture,
             categories: listing.categories,
+            status: listing.status,
             userID: listing.userID,
             userName: listing.user.userName
         })
@@ -124,11 +127,11 @@ exports.postListing = (req, res) => {
     })
 };
 
-/** delete listing
+/** cancel listing
  * expected query param:
  * @param id listingID
  */
-exports.deleteListing = (req, res) => {
+exports.cancelListing = (req, res) => {
     Listing.findOne({
         where: {
             listingID: req.query.id
@@ -138,10 +141,25 @@ exports.deleteListing = (req, res) => {
         if (!listing)
             return res.status(404).send({ message: "Invalid listingID" });
         if (req.userId !== listing.userID)
-            return res.status(401).send({ message: "Unauthorized to delete another user's listing"});
-        // delete listing
-        listing.destroy().then(_ => {
-            res.send({ message: "Listing was deleted successfully!" });
+            return res.status(401).send({ message: "Unauthorized to cancel another user's listing"});
+        // cancel all transactions
+        Transaction.findAll({
+            where: {
+                listingID: listing.listingID
+            }
+        }).then(transactions => {
+            // cancel all transactions of listing
+            transactions.forEach(t => {
+                t.status = 'cancelled';
+                // TODO: notification
+                t.save();
+            });
+            // cancel listing
+            listing.status = 'cancelled'
+            listing.destroy().then(_ => {
+                res.send({ message: "Listing was cancelled successfully!" });
+            })
         })
+        
     })
 }
