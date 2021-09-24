@@ -238,4 +238,23 @@ export class DbConnectionService {
   createCategory(fields: object){
     return this.http.post(`${this.url}/api/category/create`, fields).toPromise();
   }
+
+  /**
+   * // get all notifications from user
+   * @param userToken web token
+   * @returns http response promise
+   */
+  getUserNotifications(userToken: string){
+    return this.http.get(`${this.url}/api/notifications`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  /**
+   * mark notification as viewed
+   * @param notificationID notificationID
+   * @param userToken web token
+   * @returns http response promise
+   */
+  markNotificationAsViewed(notificationID: number, userToken: string){
+    return this.http.get(`${this.url}/api/notification/markViewed?id=${notificationID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
 }

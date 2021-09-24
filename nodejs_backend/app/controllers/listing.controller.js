@@ -2,6 +2,7 @@ const db = require("../models");
 const Listing = db.listing;
 const Transaction = db.transaction;
 const User = db.user;
+const Notification = db.notification;
 
 // returns all listings
 exports.getAllListings = (req, res) => {
@@ -152,8 +153,12 @@ exports.cancelListing = (req, res) => {
             // cancel all transactions of listing
             transactions.forEach(t => {
                 t.status = 'cancelled';
-                // TODO: notification
-                t.save();
+                Notification.create({
+                    transactionID: t.transactionID,
+                    viewed: false,
+                    userID: t.customerID,
+                    type: 'cancellation'
+                }).then(_ => t.save())
             });
             // cancel listing
             listing.status = 'cancelled'

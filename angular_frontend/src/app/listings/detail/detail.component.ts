@@ -33,6 +33,7 @@ export class DetailComponent implements OnInit {
   ngOnInit(): void {
     // get url query params
     this.route.params.subscribe(params => {
+      this.error = "";
       // get listingdata
       this.db.getListing(params.id)
         .then(l => {

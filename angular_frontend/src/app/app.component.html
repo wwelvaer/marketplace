@@ -26,6 +26,19 @@
       </li>
     </ul>
     <ul class="navbar-nav my-2 my-lg-0" *ngIf="user.isLoggedIn()">
+      <li class="nav-item dropdown">
+        <a class="nav-link" href="#" id="notificationsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <mat-icon>{{'notifications' + (getUnreadNotificationsAmount() > 0 ? '_active': '')}}</mat-icon>
+          <span class="badge badge-warning" *ngIf="getUnreadNotificationsAmount() > 0">{{getUnreadNotificationsAmount()}}</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="notificationsDropdown">
+          <a class="dropdown-item" *ngFor="let n of notifications" (click)="clickedNotification(n)" style="width: 300px;white-space: pre-wrap;">
+            <div *ngIf="n.viewed">{{getNotificationMessage(n)}}</div>
+            <b *ngIf="!n.viewed">{{getNotificationMessage(n)}}</b>
+          </a>
+          <a class="dropdown-item" *ngIf="notifications.length === 0">No notifications</a>
+        </div>
+      </li>
       <li class="nav-item">
         <a routerLink="/profile" class="nav-link">{{ user.getUserName() }}</a>
       </li>

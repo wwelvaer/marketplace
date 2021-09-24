@@ -2,6 +2,7 @@ const db = require("../models");
 const Transaction = db.transaction;
 const Listing = db.listing;
 const User = db.user;
+const Notification = db.notification;
 
 /** get all transactions on a given listingid
  * expected Query param:
@@ -73,12 +74,18 @@ exports.createTransaction = (req, res) => {
             customerID: req.userId, // get user from webtoken
             status: 'reserved',
             listingID: listing.listingID
-        }).then(b => {
+        }).then(t => {
             // update listing's available assets
             if (listing.availableAssets)
-                listing.availableAssets -= b.numberOfAssets;
+                listing.availableAssets -= t.numberOfAssets;
+            Notification.create({
+                transactionID: t.transactionID,
+                viewed: false,
+                userID: listing.userID,
+                type: 'new transaction'
+            })
             listing.save().then(() => {
-                res.send({ message: "Transaction was created successfully!", customerID: b.customerID });
+                res.send({ message: "Transaction was created successfully!", customerID: t.customerID });
             })
         })
         .catch(err => {
@@ -104,7 +111,7 @@ exports.cancelTransaction = (req, res) => {
         if (!transaction)
             return res.status(404).send({ message: "Invalid transactionID" });
         // compare user from webtoken with data
-        if (req.userId !== transaction.transactionID && req.userId !== transaction.listing.userID) 
+        if (req.userId !== transaction.customerID && req.userId !== transaction.listing.userID) 
             return res.status(401).send({ message: "Unauthorized to cancel transaction"});
         // find listing
         Listing.findOne({
@@ -121,10 +128,17 @@ exports.cancelTransaction = (req, res) => {
             listing.save().then(_ => {
                 // update transaction status
                 transaction.status = 'cancelled';
-                // TODO notification to other user of transaction
-                transaction.save().then(_ => {
-                    res.send({ message: "Transaction was cancelled successfully!" });
-                })
+                Notification.create({
+                    transactionID: transaction.transactionID,
+                    viewed: false,
+                    userID: req.userId === listing.userID ? transaction.customerID : listing.userID,
+                    type: 'cancellation'
+                }).then(() => 
+                    transaction.save().then(_ => {
+                        res.send({ message: "Transaction was cancelled successfully!" });
+                    })
+                )
+                
             })
         })
     })
@@ -151,7 +165,12 @@ exports.confirmPayment = (req, res) => {
             return res.status(401).send({ message: "Unauthorized to confirm payment"});
         // update transaction's status
         transaction.status = 'payed';
-        // TODO notification
+        Notification.create({
+            transactionID: transaction.transactionID,
+            viewed: false,
+            userID: transaction.customerID,
+            type: 'payment confirmation'
+        })
         transaction.save().then(_ => {
             res.send({ message: "Payment was confirmed successfully!" });
         }) 

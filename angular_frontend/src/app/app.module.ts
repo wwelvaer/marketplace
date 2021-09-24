@@ -21,6 +21,7 @@ import { DetailComponent } from './listings/detail/detail.component';
 import { FormComponent } from './listings/form/form.component';
 import { ChangePasswordComponent } from './profile/change-password/change-password.component';
 import { CategoriesComponent } from './categories/categories.component';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { CategoriesComponent } from './categories/categories.component';
     MatCardModule,
     MatInputModule,
     MatFormFieldModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatIconModule
   ],
   providers: [CookieService,
     MatDatepickerModule,
