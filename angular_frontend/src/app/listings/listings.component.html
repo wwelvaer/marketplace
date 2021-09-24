@@ -46,6 +46,18 @@
           </div>
           <div class="col-auto" *ngIf="lst.length > 0">
             <div class="row">
+              <div class="col-auto" *ngIf="hasCancelled">
+                <div class="card">
+                  <div class="card-body" style="padding:10px">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="checkActive" [(ngModel)]="activeListings">
+                      <label class="form-check-label" for="checkActive">
+                        Only show active listings
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="col-auto">
                 <div class="form-group">
                   <label for="itemsPerPage">Items Per Page: </label>
@@ -79,7 +91,10 @@
                   <div class="card-body">
                     <div class="row no-gutters">
                       <div class="col" [routerLink]="['/listings', 'details', l.listingID]">
-                        <h5 class="card-title">{{l.name}}</h5>
+                        <h5 class="card-title">{{l.name}}
+                          <b *ngIf="user.getId() === l.userID" style="color: blue;"> (YOURS) </b>
+                          <b *ngIf="l.status ==='cancelled'" style="color: red;"> (CANCELLED) </b>
+                        </h5>
                         <p *ngIf="!transactions">Available Assets: <b>{{l.availableAssets}}</b></p>
                         <p *ngIf="transactions">Number of Assets: <b>{{l.numberOfAssets}}</b></p>
                         <p *ngIf="!transactions">Start Date: <b>{{l.startDate}}</b></p>
@@ -88,10 +103,6 @@
                       </div>
                       <div class="col-auto" *ngIf="!transactions">
                         <h2 ><i>€ {{l.price}}</i></h2>
-                        <div *ngIf="user.getId() === l.userID" class="btn-group special" role="group" aria-label="..." style="padding:5px;">
-                          <button type="button" class="btn btn-success" routerLink="/listings/form" [queryParams]="{edit: l.listingID}">✏️</button>
-                          <button type="button" class="btn btn-danger" (click)="deleteListing(l.listingID)">🗑️</button>
-                        </div>
                       </div>
                       <div class="col-auto" *ngIf="transactions && l.status !== 'cancelled'">
                         <button type="button" class="btn btn-danger" (click)="cancelTransaction(l.transactionID)">CANCEL</button>

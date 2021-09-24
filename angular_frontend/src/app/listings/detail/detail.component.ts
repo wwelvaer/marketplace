@@ -63,9 +63,11 @@ export class DetailComponent implements OnInit {
   }
 
   // delete listing
-  deleteListing(id: number){
-    this.db.deleteListing(id, this.user.getLoginToken()).then(_ => {
-      this.location.back() // go back
+  cancelListing(id: number){
+    this.db.cancelListing(id, this.user.getLoginToken()).then(_ => {
+      this.listing['status'] = 'cancelled'
+      // update transaction data
+      this.loadTransactions();
     })
   }
 

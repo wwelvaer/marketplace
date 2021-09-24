@@ -47,6 +47,7 @@ exports.createListing = (req, res) => {
         price: req.body.price,
         picture: req.body.picture,
         categories: req.body.categories,
+        status: 'active',
         userID: req.userId
     }).then(l => {
         res.send({ message: "Listing was created successfully!", listingID: l.listingID });
@@ -156,7 +157,7 @@ exports.cancelListing = (req, res) => {
             });
             // cancel listing
             listing.status = 'cancelled'
-            listing.destroy().then(_ => {
+            listing.save().then(_ => {
                 res.send({ message: "Listing was cancelled successfully!" });
             })
         })

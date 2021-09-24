@@ -11,6 +11,8 @@ import { UserService } from '../services/user.service';
 })
 export class ListingsComponent implements OnInit {
 
+  activeListings: boolean = true;
+  hasCancelled: boolean = false;
   selected: Date | null; // calendar value
   listings = []
   categories = [];
@@ -55,6 +57,7 @@ export class ListingsComponent implements OnInit {
   filteredListings = () => {
     let selectedCategories = this.categories.map(x => x[1]).reduce((acc, val) => acc.concat(val), []).filter(x => x.selected).map(x => x.name);
     return this.listings
+    .filter(l => (this.activeListings && l.status === "active") || !this.activeListings) // filter only active listings
     .filter(l => selectedCategories.every(x => (l.categories).includes(x))) // categories
     .filter(u => Object.values(u).join("").toString().toLowerCase().indexOf(this.searchTerm.toString().toLowerCase()) > -1 && (!this.selected || this.selected.getTime() >= new Date(u.startDate).setHours(0, 0, 0, 0)))
     .sort(this.sortCols[this.sortCol].sortFunc)
@@ -82,9 +85,15 @@ export class ListingsComponent implements OnInit {
         // when query has 'id' parameter display listings from user with id
         let uId = qMap['params'].id;
         if (uId)
-            this.db.getUserListings(uId).then(l => this.listings = l['listings'])
+            this.db.getUserListings(uId).then(l => {
+              this.listings = l['listings']
+              this.hasCancelled = this.listings.some(x => x.status === "cancelled")
+          })
         else
-          this.db.getAllListings().then(l => this.listings = l['listings'])
+          this.db.getAllListings().then(l => {
+            this.listings = l['listings']
+            this.hasCancelled = false;
+          })
       }
     })
   }
@@ -93,14 +102,6 @@ export class ListingsComponent implements OnInit {
   fetchTransactions(){
     this.db.getUserTransactions(this.user.getLoginToken())
         .then(l => this.listings = l['transactions'].sort((a, b) => b.transactionID - a.transactionID).map(x => {return {...x, ...x.listing}}))
-  }
-
-  // delete listing
-  deleteListing(id: number){
-    this.db.deleteListing(id, this.user.getLoginToken()).then(_ => {
-      // remove from list
-      this.listings = this.listings.filter(x => x.listingID !== id)
-    })
   }
 
   // cancel transaction

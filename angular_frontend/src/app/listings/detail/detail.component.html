@@ -1,12 +1,14 @@
 <div *ngIf="listing && !error" class="container" style="margin: 10px;">
   <div class="row">
     <div class="col">
-      <h1>{{ listing.name }} </h1>
+      <h1>{{ listing.name }}
+        <b *ngIf="listing.status ==='cancelled'" style="color: red;"> (CANCELLED) </b>
+      </h1>
     </div>
-    <div class="col-auto" *ngIf="user.getId() === listing.userID">
+    <div class="col-auto" *ngIf="user.getId() === listing.userID && listing.status !== 'cancelled'">
       <div class="btn-group" role="group">
         <button type="button" class="btn btn-lg btn-success" routerLink="/listings/form" [queryParams]="{edit: listing.listingID}">EDIT</button>
-        <button type="button" class="btn btn-lg btn-danger" (click)="deleteListing(listing.listingID)">DELETE</button>
+        <button type="button" class="btn btn-lg btn-danger" (click)="cancelListing(listing.listingID)">CANCEL</button>
       </div>
     </div>
   </div>

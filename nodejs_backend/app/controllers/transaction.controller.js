@@ -64,7 +64,7 @@ exports.createTransaction = (req, res) => {
             return res.status(404).send({ message: "Invalid listingID" });
         if (!req.body.numberOfAssets)
             return res.status(400).send({ message: "Number of assets not given"});
-        if (listing.availableAssets < req.body.numberOfAssets)
+        if (listing.availableAssets && listing.availableAssets < req.body.numberOfAssets)
             return res.status(400).send({ message: "Not enough assets available" });
         // create transaction
         Transaction.create({
@@ -75,7 +75,8 @@ exports.createTransaction = (req, res) => {
             listingID: listing.listingID
         }).then(b => {
             // update listing's available assets
-            listing.availableAssets -= b.numberOfAssets;
+            if (listing.availableAssets)
+                listing.availableAssets -= b.numberOfAssets;
             listing.save().then(() => {
                 res.send({ message: "Transaction was created successfully!", customerID: b.customerID });
             })
@@ -115,7 +116,8 @@ exports.cancelTransaction = (req, res) => {
             if (!listing)
                 return res.status(404).send({ message: "Transaction has invalid listingID" });
             // update listing's available assets
-            listing.availableAssets += transaction.numberOfAssets;
+            if (listing.availableAssets)
+                listing.availableAssets += transaction.numberOfAssets;
             listing.save().then(_ => {
                 // update transaction status
                 transaction.status = 'cancelled';

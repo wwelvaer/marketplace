@@ -38,8 +38,8 @@ module.exports = function(app) {
     );
 
     app.get(
-      "/api/listing/delete",
+      "/api/listing/cancel",
       [authJwt.verifyToken],
-      controller.deleteListing
+      controller.cancelListing
     );
   };

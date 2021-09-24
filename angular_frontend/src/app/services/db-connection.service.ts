@@ -145,13 +145,13 @@ export class DbConnectionService {
   }
 
   /**
-   * delete listing
+   * cancel listing
    * @param id listingID
    * @param userToken webtoken
    * @returns http response promise
    */
-  deleteListing(id: number,  userToken: string){
-    return this.http.get(`${this.url}/api/listing/delete?id=${id}`, {headers: this.getTokenHeader(userToken)}).toPromise();
+  cancelListing(id: number,  userToken: string){
+    return this.http.get(`${this.url}/api/listing/cancel?id=${id}`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
   /**
