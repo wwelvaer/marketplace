@@ -12,9 +12,8 @@ export class ImageService {
   constructor() { }
 
   convertFileToJpegBase64(file: File, callback: Function, errCallback: Function){
-    if (file.type.split("/")[0] !== "image"){
+    if (file.type.split("/")[0] !== "image")
       return errCallback("File has no Image type!");
-    }
     // read FileData
     const reader = new FileReader();
     reader.readAsDataURL(file);

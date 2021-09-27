@@ -11,7 +11,7 @@ module.exports = function(app) {
     });
 
     app.get(
-      "/api/notifications/",
+      "/api/notifications",
       [authJwt.verifyToken],
       controller.getUserNotifications
     );

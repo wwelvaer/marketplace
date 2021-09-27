@@ -9,6 +9,7 @@ exports.getUserNotifications = (req, res) => {
         where: {
             userID: req.userId
         },
+        // include customerID, listingID and listing name
         include: {model: Transaction, attributes: ['listingID', 'customerID'], include: {model: Listing, attributes: ['name']}},
     }).then(n => {
         res.status(200).send({notifications: n})

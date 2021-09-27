@@ -11,18 +11,20 @@ import { UserService } from './services/user.service';
 export class AppComponent {
   title = 'Marketplace';
   notifications: object[] = [];
-  timeToRefresh = 5000;
+  timeToRefresh = 5000; // time in ms
 
   constructor(public user: UserService,
     private db: DbConnectionService,
     private router: Router){
       this.fetchNotifications();
+      // repeatedly check for notifications
       setInterval(() => {
         this.fetchNotifications();
       }, this.timeToRefresh);
 
   }
 
+  // turn notification into message
   getNotificationMessage(notification: object): string{
     switch (notification['type']) {
       case 'new transaction':
@@ -39,19 +41,26 @@ export class AppComponent {
     }
   }
 
+  // onClick function
   clickedNotification(notification: object){
+    // mar notification as viewed
     this.db.markNotificationAsViewed(notification['notificationID'], this.user.getLoginToken()).then(_ => {
+      // navigate to page according to notification
       switch (notification['type']) {
         case 'new transaction':
+          // go to detail page of listing
           this.router.navigate(['/listings/details', notification['transaction'].listingID])
           break;
         case 'cancellation':
           if (notification['transaction'].customerID === this.user.getId())
+            // go to my transactions
             this.router.navigate(['/listings'], {queryParams: { transactions: true }})
           else
+            // go to detail page of listing
             this.router.navigate(['/listings/details', notification['transaction'].listingID])
           break;
         case 'payment confirmation':
+          // go to my transactions
           this.router.navigate(['/listings'], {queryParams: { transactions: true }})
           break;
         default:
@@ -60,6 +69,7 @@ export class AppComponent {
     })
   }
 
+  // get notifications and sort recent to last
   fetchNotifications() {
     if (this.user.isLoggedIn())
       this.db.getUserNotifications(this.user.getLoginToken()).then(r => this.notifications = r['notifications'].sort((a, b) => b['notificationID'] - a['notificationID']))

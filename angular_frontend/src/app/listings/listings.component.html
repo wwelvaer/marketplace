@@ -1,18 +1,22 @@
 <div style="margin: 10px;">
   <div class="row" *ngIf="filteredListings() as lst">
     <div class="col-3" *ngIf="!transactions">
-      <mat-card style="width: 100%;padding-top: 0px">
-        <mat-calendar [selected]="selected" (selectedChange)="selected = $event"></mat-calendar>
-      </mat-card>
-      <button *ngIf="selected" type="button" class="btn btn-outline-danger btn-block" (click)="selected = null">Clear Date Selection</button>
-      <h2 class="display-4" style="margin-top: 10px;">Categories:</h2>
-      <div *ngFor="let category of categories">
-        <h4 class="display-6" style="margin-top: 10px;">{{category[0]}}</h4>
-        <div class="btn-group-toggle btn-group-vertical" data-toggle="buttons" style="width: 100%;">
-          <label *ngFor="let c of category[1]" class="btn btn-outline-dark btn-block" [for]="c.name">
-            <input type="checkbox" class="btn-check" [id]="c.name" autocomplete="off" [(ngModel)]="c.selected">
-            {{c.name + (c.selected ? ' ✔' : '')}}
-          </label>
+      <div class="card">
+        <div class="card-body">
+          <mat-card style="width: 100%;padding-top: 0px">
+            <mat-calendar [selected]="selected" (selectedChange)="selected = $event"></mat-calendar>
+          </mat-card>
+          <button *ngIf="selected" type="button" class="btn btn-outline-danger btn-block" (click)="selected = null">Clear Date Selection</button>
+          <h2 class="display-4" style="margin-top: 10px;">Categories:</h2>
+          <div *ngFor="let category of categories">
+            <h4 class="display-6" style="margin-top: 10px;">{{category[0]}}</h4>
+            <div class="btn-group-toggle btn-group-vertical" data-toggle="buttons" style="width: 100%;">
+              <label *ngFor="let c of category[1]" class="btn btn-outline-dark btn-block" [for]="c.name">
+                <input type="checkbox" class="btn-check" [id]="c.name" autocomplete="off" [(ngModel)]="c.selected">
+                {{c.name + (c.selected ? ' ✔' : '')}}
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -42,7 +46,7 @@
       <div class="container">
         <div class="row">
           <div class="col">
-            <p style="margin: 0px;"><i>{{ lst.length }} results</i></p>
+            <p style="margin: 0px;"><i>{{ lst.length + (lst.length > 1 ? " results" : " result")}} </i></p>
           </div>
           <div class="col-auto" *ngIf="hasCancelled">
             <div class="card">
@@ -82,7 +86,7 @@
         </div>
         <div class="row">
           <div class="col" *ngIf="pageLimitOption[pageLimitIndex] as pageLimit">
-            <div class="card" *ngFor="let l of lst.slice(pageLimit * (currentPage - 1), pageLimit * (currentPage - 1) + pageLimit)">
+            <div class="card" *ngFor="let l of lst.slice(pageLimit * (currentPage - 1), pageLimit * (currentPage - 1) + pageLimit)" style="margin-bottom: 5px;">
               <div class="row no-gutters">
                 <div class="col-auto" style="cursor:pointer;" [routerLink]="['/listings', 'details', l.listingID]">
                   <img class="card-img-left" [src]="l.picture ? l.picture : image.getPlaceholderImage()" style="width: 286px;height: 180px;" alt="Card image cap">
