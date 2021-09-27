@@ -40,10 +40,11 @@
         </div>
       </li>
       <li class="nav-item">
-        <a routerLink="/profile" class="nav-link">{{ user.getUserName() }}</a>
+        <a routerLink="/profile" class="nav-link">{{ user.getUserName() }}
+          <img style="border-radius: 50%; height: 30px; width: 30px" [src]="user.getProfilePicture()"></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/login" (click)="user.logOut()">log out</a>
+        <a class="nav-link" routerLink="/login" (click)="user.logOut()" style="margin-top: 3px">log out</a>
       </li>
       <button class="btn btn-success" [routerLink]="['/listings', 'form']">+ Create Listing</button>
     </ul>

@@ -27,4 +27,9 @@ module.exports = function(app) {
     [authJwt.verifyToken],
     controller.changePassword
   );
+
+  app.get(
+    "/api/userPicture",
+    controller.getProfilePicture
+  );
 };

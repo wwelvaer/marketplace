@@ -9,13 +9,25 @@ export class UserService {
 
   cookieName: string = 'user'
   user: User
+  profilePic: string;
   public storeCookie: boolean = false;
 
-  constructor(private cookieService: CookieService) {
+  constructor(private cookieService: CookieService,
+    private db: DbConnectionService) {
     // search for user in cookies
     let u = this.cookieService.get(this.cookieName);
-    if (u)
+    if (u){
       this.user = JSON.parse(u);
+      this.fetchProfilePicture();
+    }
+
+  }
+
+  fetchProfilePicture(){
+    if (this.isLoggedIn())
+        this.db.getProfilePicture(this.getId()).then(r => {
+          this.profilePic = r["profilePicture"]
+        })
   }
 
   isLoggedIn(): boolean{
@@ -27,12 +39,14 @@ export class UserService {
     if (this.storeCookie)
       this.cookieService.set(this.cookieName, JSON.stringify(user), 1);
     this.user = user;
+    this.fetchProfilePicture();
   }
 
   logOut(): void{
     // delete user cookie
     this.cookieService.delete(this.cookieName)
     this.user = undefined;
+    this.profilePic = undefined;
   }
 
   getLoginToken(): string {
@@ -54,6 +68,10 @@ export class UserService {
       password.split("").reduce((t, x) => t || !isNaN(+x), false), // contains number
       password.length >= 8, // long enough
     ].reduce((acc, x) => x ? acc + 1 : acc, 1)
+  }
+
+  getProfilePicture(): string{
+    return this.profilePic ? this.profilePic : "/assets/userPlaceholder.png";
   }
 }
 

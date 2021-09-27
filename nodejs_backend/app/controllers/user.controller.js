@@ -25,7 +25,8 @@ exports.getUserData = (req, res) => {
             gender: user.gender,
             address: user.address,
             birthDate: user.birthDate,
-            phoneNumber: user.phoneNumber
+            phoneNumber: user.phoneNumber,
+            profilePicture: user.profilePicture
         });
     })
 };
@@ -42,6 +43,7 @@ exports.getUserData = (req, res) => {
  * @param address
  * @param birthDate
  * @param phoneNumber
+ * @param profilePicture
  */
 exports.postUserData = (req, res) => {
     // find user
@@ -62,6 +64,7 @@ exports.postUserData = (req, res) => {
         user.address = req.body.address;
         user.birthDate = req.body.birthDate;
         user.phoneNumber = req.body.phoneNumber;
+        user.profilePicture = req.body.profilePicture;
         user.save().then(user => {
             res.send({ message: "Userdata was updatet successfully!" });
         })
@@ -93,5 +96,23 @@ exports.changePassword = (req, res) => {
         user.save().then(_ => {
             res.send({message: "Password updated successfully"})
         })
+    })
+}
+
+/**
+ * expected param in query
+ * @param id userID 
+ */
+exports.getProfilePicture = (req, res) => {
+    // finds user using id in query
+    User.findOne({
+        where: {
+            userID: req.query.id
+        }
+    }).then(u => {
+        // catch errors
+        if (!u)
+            return res.status(404).send({ message: "No user matching webtoken found"});
+        res.send({profilePicture: u.profilePicture})
     })
 }

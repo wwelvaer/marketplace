@@ -59,6 +59,11 @@ export class FormComponent implements OnInit {
             price: l['price'],
             location: l['location'],
           })
+          if (l['picture']){
+            this.imgSrc = l['picture']
+            this.imgError = ""
+          }
+
           this.getCategories(l['categories']);
         })
       } else
@@ -91,7 +96,7 @@ export class FormComponent implements OnInit {
       this.imgSrc = c;
     }, (err) => {
       this.imgError = err;
-    })
+    }, 572, 360)
   }
 
   // onSubmit function
@@ -101,8 +106,7 @@ export class FormComponent implements OnInit {
     // add selected categories
     values['categories'] = this.categories.map(x => x[1]).reduce((acc, val) => acc.concat(val), []).filter(x => x.selected).map(x => x.name)
     // add image
-    if (this.imgSrc)
-      values['picture'] = this.imgSrc;
+    values['picture'] = this.imgSrc;
     // create listing
     if (this.listingId < 0)
       this.db.createListing(this.user.getLoginToken(), values).then(r => {

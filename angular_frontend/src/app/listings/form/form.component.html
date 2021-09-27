@@ -45,9 +45,10 @@
                   <input type="file" class="custom-file-input" id="customFile" (change)="fileSelected($event)">
                   <label class="custom-file-label" for="customFile">{{fileName ? fileName : 'Choose Image'}}</label>
                 </div>
-                <div style="display: flex;justify-content: center;">
-                  <img *ngIf="imgSrc" style="width: 286px;height: 180px;" [src]="imgSrc">
+                <div *ngIf="imgSrc" style="display: flex;justify-content: center;">
+                  <img style="width: 318px;height: 200px;" [src]="imgSrc">
                 </div>
+                <button *ngIf="imgSrc" type="button" class="btn btn-outline-danger btn-block" (click)="imgSrc = null">Remove picture</button>
                 <small *ngIf="imgError" class="form-text"><i style="color: red;">{{imgError}}</i></small>
               </div>
             </form>

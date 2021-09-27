@@ -36,6 +36,9 @@ module.exports = (sequelize, Sequelize) => {
       },
       phoneNumber: {
         type: Sequelize.STRING(20)
+      },
+      profilePicture: {
+        type: Sequelize.TEXT('long')
       }
     }, {
       timestamps: false,

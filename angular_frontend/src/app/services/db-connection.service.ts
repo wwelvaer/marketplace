@@ -75,6 +75,15 @@ export class DbConnectionService {
   }
 
   /**
+   * get profile picture
+   * @param userID userID
+   * @returns http response promise
+   */
+  getProfilePicture(userID: number){
+    return this.http.get(`${this.url}/api/userPicture?id=${userID}`).toPromise();
+  }
+
+  /**
    * change password
    * @param oldPassword
    * @param newPassword
