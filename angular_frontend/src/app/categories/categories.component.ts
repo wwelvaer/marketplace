@@ -21,6 +21,7 @@ export class CategoriesComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  // get categories
   fetchCategories(){
     this.db.getCategories().then(c => {
       this.categories = Object.entries(c)
@@ -31,12 +32,15 @@ export class CategoriesComponent implements OnInit {
     })
   }
 
+  // add new field of category
   addOption(categoryIndex: number){
     this.loading = true;
     let f = {name: this.newOptionName[categoryIndex]}
+    // type is category name (Other = null)
     if (this.categories[categoryIndex][0] !== "Other")
       f['type'] = this.categories[categoryIndex][0]
     this.db.createCategory(f).then(_ => {
+      // update categories
       this.fetchCategories();
       this.newOptionName[categoryIndex] = "";
     }).catch(err => {
@@ -45,6 +49,7 @@ export class CategoriesComponent implements OnInit {
     })
   }
 
+  // add category (only locally)
   addCategory(){
     this.categories.push([this.newCategoryName, []])
     this.newCategoryName = "";
@@ -53,6 +58,7 @@ export class CategoriesComponent implements OnInit {
   removeOption(categoryIndex: number, optionIndex: number){
     this.loading = true;
     this.db.deleteCategory(this.categories[categoryIndex][1][optionIndex]).then(_ => {
+      // update categories
       this.fetchCategories();
     }).catch(err => {
       this.error = err.error.message
@@ -60,9 +66,11 @@ export class CategoriesComponent implements OnInit {
     })
   }
 
+  // remove all options in category
   removeCategory(categoryIndex: number){
     this.loading = true;
     this.db.deleteCategoryType(this.categories[categoryIndex][0]).then(_ => {
+      // update categories
       this.fetchCategories();
     }).catch(err => {
       this.error = err.error.message
