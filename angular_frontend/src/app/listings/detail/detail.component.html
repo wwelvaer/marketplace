@@ -19,6 +19,7 @@
       <p *ngIf="listing.description">{{ listing.description }}</p>
       <p *ngIf="listing.availableAssets"><b>Available Assets: </b>{{ listing.availableAssets }}</p>
       <p *ngIf="listing.startDate"><b>Start Date:</b> {{ listing.startDate }}</p>
+      <p *ngIf="listing.location"><b>Location:</b> {{ listing.location }}</p>
       <p><b>Seller:</b> {{ listing.userName }}</p>
       <p *ngFor="let c of listing.categories"><b>{{c[0]}}:</b> {{ c[1].join(", ")}}</p>
     </div>

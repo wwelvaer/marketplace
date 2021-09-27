@@ -89,7 +89,7 @@
             <div class="card" *ngFor="let l of lst.slice(pageLimit * (currentPage - 1), pageLimit * (currentPage - 1) + pageLimit)" style="margin-bottom: 5px;">
               <div class="row no-gutters">
                 <div class="col-auto" style="cursor:pointer;" [routerLink]="['/listings', 'details', l.listingID]">
-                  <img class="card-img-left" [src]="l.picture ? l.picture : image.getPlaceholderImage()" style="width: 286px;height: 180px;" alt="Card image cap">
+                  <img class="card-img-left" [src]="l.picture ? l.picture : image.getPlaceholderImage()" style="width: 318px;height: 200;" alt="Card image cap">
                 </div>
                 <div class="col">
                   <div class="card-body">
@@ -102,6 +102,7 @@
                         <p *ngIf="!transactions && l.availableAssets">Available Assets: <b>{{l.availableAssets}}</b></p>
                         <p *ngIf="transactions">Number of Assets: <b>{{l.numberOfAssets}}</b></p>
                         <p *ngIf="!transactions && l.startDate">Start Date: <b>{{l.startDate}}</b></p>
+                        <p *ngIf="!transactions && l.location">Location: <b>{{l.location}}</b></p>
                         <p *ngIf="transactions">Price: <b>€{{l.pricePerAsset * l.numberOfAssets}}</b></p>
                         <p *ngIf="transactions">Status: <b>{{l.status}}</b></p>
                       </div>

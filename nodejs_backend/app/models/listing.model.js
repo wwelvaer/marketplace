@@ -24,6 +24,9 @@ module.exports = (sequelize, Sequelize) => {
       picture: { // base64 string
         type: Sequelize.TEXT('long')
       },
+      location: {
+        type: Sequelize.STRING
+      },
       categories: {
         type: Sequelize.STRING,
         get() {

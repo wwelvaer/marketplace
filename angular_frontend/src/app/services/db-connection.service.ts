@@ -112,6 +112,7 @@ export class DbConnectionService {
    *  @field startDate
    *  @field price
    *  @field picture: image in base64 format
+   *  @field location
    * @returns http response promise
    */
   createListing(userToken: string, fields: Object){
@@ -138,6 +139,7 @@ export class DbConnectionService {
    *  @field startDate
    *  @field price
    *  @field picture: image in base64 format
+   *  @field location
    * @returns http response promise
    */
   postListing(id: number,  userToken: string, fields: Object){

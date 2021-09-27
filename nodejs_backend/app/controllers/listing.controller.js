@@ -37,6 +37,7 @@ exports.getUserListings = (req, res) => {
  * @param startDate
  * @param price
  * @param picture // image in base64 format
+ * @param location
  * @param categories
  */
 exports.createListing = (req, res) => {
@@ -47,6 +48,7 @@ exports.createListing = (req, res) => {
         startDate: req.body.startDate,
         price: req.body.price,
         picture: req.body.picture,
+        location: req.body.location,
         categories: req.body.categories,
         status: 'active',
         userID: req.userId
@@ -81,6 +83,7 @@ exports.getListing = (req, res) => {
             startDate: listing.startDate,
             price: listing.price,
             picture: listing.picture,
+            location: listing.location,
             categories: listing.categories,
             status: listing.status,
             userID: listing.userID,
@@ -100,6 +103,7 @@ exports.getListing = (req, res) => {
  * @param startDate
  * @param price
  * @param picture // image in base64 format
+ * @param location
  * @param categories
  */
 exports.postListing = (req, res) => {
@@ -120,6 +124,7 @@ exports.postListing = (req, res) => {
         listing.startDate = req.body.startDate
         listing.price = req.body.price
         listing.picture = req.body.picture
+        listing.location = req.body.location
         listing.categories = req.body.categories
         listing.save().then(_ => {
             res.send({ message: "Listing was updatet successfully!" });
