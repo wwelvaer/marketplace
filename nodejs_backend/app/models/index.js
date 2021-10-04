@@ -31,6 +31,7 @@ db.listing = require("../models/listing.model.js")(sequelize, Sequelize);
 db.transaction = require("../models/transaction.model.js")(sequelize, Sequelize);
 db.category = require("../models/category.model.js")(sequelize, Sequelize);
 db.notification = require("../models/notification.model.js")(sequelize, Sequelize);
+db.review = require("../models/review.model.js")(sequelize, Sequelize);
 
 // add foreign keys
 db.listing.belongsTo(db.user, {foreignKey: 'userID'})
@@ -38,5 +39,6 @@ db.transaction.belongsTo(db.listing, {foreignKey: 'listingID'})
 db.transaction.belongsTo(db.user, {foreignKey: 'customerID'})
 db.notification.belongsTo(db.user, {foreignKey: 'userID'})
 db.notification.belongsTo(db.transaction, {foreignKey: 'transactionID'})
+db.review.belongsTo(db.transaction, {foreignKey: 'transactionID'})
 
 module.exports = db;

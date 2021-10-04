@@ -36,7 +36,7 @@ export class CategoriesComponent implements OnInit {
   addOption(categoryIndex: number){
     this.loading = true;
     let f = {name: this.newOptionName[categoryIndex]}
-    // type is category name (Other = null)
+    // db field `type` is category name (Other = null)
     if (this.categories[categoryIndex][0] !== "Other")
       f['type'] = this.categories[categoryIndex][0]
     this.db.createCategory(f).then(_ => {

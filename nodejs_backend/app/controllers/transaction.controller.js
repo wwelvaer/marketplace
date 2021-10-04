@@ -64,9 +64,11 @@ exports.createTransaction = (req, res) => {
         if (!listing)
             return res.status(404).send({ message: "Invalid listingID" });
         if (!req.body.numberOfAssets)
-            return res.status(400).send({ message: "Number of assets not given"});
+            return res.status(400).send({ message: "Number of assets not given" });
         if (listing.availableAssets && listing.availableAssets < req.body.numberOfAssets)
             return res.status(400).send({ message: "Not enough assets available" });
+        if (req.userId === listing.userID)
+            return res.status(401).send({ message: "Can't make a transaction on your own listing" })
         // create transaction
         Transaction.create({
             numberOfAssets: req.body.numberOfAssets,

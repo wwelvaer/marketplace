@@ -23,6 +23,7 @@ require('./app/routes/listing.routes')(app);
 require('./app/routes/transaction.routes')(app);
 require('./app/routes/category.routes')(app);
 require('./app/routes/notification.routes')(app);
+require('./app/routes/review.routes')(app);
 
 // listen for requests
 app.listen(PORT, () => {
