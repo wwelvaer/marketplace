@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
         max: 5
       },
       comment: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       reviewType: {
         type: Sequelize.ENUM('user', 'listing')

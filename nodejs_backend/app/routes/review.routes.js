@@ -23,6 +23,6 @@ module.exports = function(app) {
 
     app.get(
       "/api/reviews/user",
-      controller.getListingReviews
+      controller.getUserReviews
     );
   };
