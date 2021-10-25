@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DbConnectionService } from '../services/db-connection.service';
 import { ImageService } from '../services/image.service';
 import { UserService } from '../services/user.service';
@@ -17,6 +18,8 @@ export class ListingsComponent implements OnInit {
   listings = []
   categories = [];
   transactions: boolean = false; // true ->  display transactionInfo; false -> display listingInfo
+
+  // searchbar + sorting
   searchTerm: string = ""; // searchbar value
   sortCol: number = 4; // sort dropdown index value
   sortCols = [ // sort dropdown values + sort functions
@@ -46,6 +49,13 @@ export class ListingsComponent implements OnInit {
       sortFunc: (a, b) => b.price - a.price
     }];
 
+  // review
+  form: FormGroup;
+  selectedTransactionForReview: number = -1;
+  rating: number = 0; // selected rating for review
+  hoverRating: number = 0; // rating shown when hovering
+
+  // pages
   pageLimitOption = [10, 20, 50]
   pageLimitIndex = 1; // selected pageLimit index
   currentPage = 1;
@@ -66,7 +76,12 @@ export class ListingsComponent implements OnInit {
   constructor(private db: DbConnectionService,
     private user: UserService,
     private route: ActivatedRoute,
-    public image: ImageService) { }
+    public image: ImageService,
+    public router: Router) {
+      this.form = new FormGroup({
+        comment: new FormControl('')
+      });
+     }
 
   ngOnInit(): void {
     // get categories
@@ -111,6 +126,15 @@ export class ListingsComponent implements OnInit {
   cancelTransaction(transactionID: number){
     this.db.cancelTransaction(transactionID, this.user.getLoginToken())
       .then(_ => this.fetchTransactions()) // update transactionInfo
+  }
+
+  postReview(){
+    let v = this.form.getRawValue();
+    v['score'] = this.rating;
+    this.db.postReview(this.user.getLoginToken(), this.selectedTransactionForReview, v).then(r => {
+      console.log(r);
+      this.router.navigateByUrl('/listings/details/' + r['listingID']);
+    })
   }
 
 }

@@ -268,4 +268,34 @@ export class DbConnectionService {
   markNotificationAsViewed(notificationID: number, userToken: string){
     return this.http.get(`${this.url}/api/notification/markViewed?id=${notificationID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
+
+  /**
+   * post a review
+   * @param transactionID transactionID
+   * @param fields
+   *  @field comment
+   *  @field score [1-5]
+   * @returns http response promise
+   */
+  postReview(userToken: string, transactionID: number, fields: object){
+    return this.http.post(`${this.url}/api/review/post?id=${transactionID}`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
+  }
+
+  /**
+   * get all reviews on listing
+   * @param transactionID transactionID
+   * @returns http response promise
+   */
+  getListingReviews(transactionID: number){
+    return this.http.get(`${this.url}/api/reviews/listing?id=${transactionID}`).toPromise();
+  }
+
+  /**
+   * get all reviews on user
+   * @param userID userID
+   * @returns http response promise
+   */
+  getUserReviews(userID: number){
+    return this.http.get(`${this.url}/api/reviews/user?id=${userID}`).toPromise();
+  }
 }

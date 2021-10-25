@@ -10,7 +10,7 @@ module.exports = function(app) {
       next();
     });
   
-    app.get(
+    app.post(
       "/api/review/post",
       [authJwt.verifyToken],
       controller.postReview

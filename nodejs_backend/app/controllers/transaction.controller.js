@@ -3,6 +3,7 @@ const Transaction = db.transaction;
 const Listing = db.listing;
 const User = db.user;
 const Notification = db.notification;
+const Review = db.review;
 
 /** get all transactions on a given listingid
  * expected Query param:
@@ -28,8 +29,21 @@ exports.getListingTransactions = (req, res) => {
             // include userdata (when user has no firstName and lastName use email as name)
             include: {model: User, attributes: ['userID', [db.sequelize.literal("CASE WHEN firstName = '' AND lastName = '' THEN email ELSE CONCAT(firstName, ' ', lastName) END"), 'name']]},
         }).then(b => {
-            // send data
-            return res.status(200).send({transactions: b})
+            let checkedTransactions = [];
+            b.forEach(x => {
+                Review.findOne({
+                    where: {
+                        transactionID: x.transactionID,
+                        reviewType: 'user'
+                    }
+                }).then(r => {
+                    x.dataValues['reviewed'] = Boolean(r);
+                    checkedTransactions.push(x);
+                    if (checkedTransactions.length == b.length)
+                        // send data
+                        return res.status(200).send({transactions: checkedTransactions})
+                })
+            });
         })
     })
 };
@@ -43,8 +57,21 @@ exports.getUserTransactions = (req, res) => {
         // include listingdata
         include: {model: Listing, attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'userID']},
     }).then(b => {
-        // send data
-        return res.status(200).send({transactions: b})
+        let checkedTransactions = [];
+        b.forEach(x => {
+            Review.findOne({
+                where: {
+                    transactionID: x.transactionID,
+                    reviewType: 'listing'
+                }
+            }).then(r => {
+                x.dataValues['reviewed'] = Boolean(r);
+                checkedTransactions.push(x);
+                if (checkedTransactions.length == b.length)
+                    // send data
+                    return res.status(200).send({transactions: checkedTransactions})
+            })
+        });
     })
 };
 

@@ -35,7 +35,7 @@ export class AppComponent {
         else
           return `A transaction on your ${notification['transaction'].listing.name} has been cancelled`
       case 'payment confirmation':
-        return `Your payment on ${notification['transaction'].listing.name} has been confirmed`
+        return `Your payment on ${notification['transaction'].listing.name} has been confirmed, you can now leave a review`
       default:
         break;
     }

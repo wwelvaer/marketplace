@@ -33,7 +33,7 @@ import {MatIconModule} from '@angular/material/icon';
     DetailComponent,
     FormComponent,
     ChangePasswordComponent,
-    CategoriesComponent
+    CategoriesComponent,
   ],
   imports: [
     BrowserModule,

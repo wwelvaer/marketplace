@@ -1,4 +1,3 @@
-const { listing, transaction } = require("../models");
 const db = require("../models");
 const Review = db.review;
 const Transaction = db.transaction;
@@ -28,6 +27,8 @@ exports.postReview = (req, res) => {
             return res.status(401).send({ message: "Only customer and provider of transaction can post a transaction" })
         if (req.body.score < 1 || req.body.score > 5)
             return res.status(400).send({ message: "Score must be in range [1,5]" })
+        if (transaction.status !== 'payed')
+            return res.status(402).send({ message: "Only payed transactions can be reviewed" })
         Review.findOne({
             where: {
                 transactionID: transaction.transactionID,
@@ -42,13 +43,11 @@ exports.postReview = (req, res) => {
                 reviewType: req.userId === transaction.customerID ? 'listing' : 'user',
                 transactionID: transaction.transactionID
             }).then(() => {
-                res.send({ message: "Review was posted successfully!" });
+                res.send({ message: "Review was posted successfully!", listingID: transaction.listingID });
             }).catch(err => {
-                res.status(500).send({ message: err.message });
+                res.status(500).send({ message: err.message});
             });
         })
-        
-        
     })
 }
 
@@ -76,7 +75,7 @@ exports.getListingReviews = (req, res) => {
  * expected query param:
  * @param id userID 
  */
- exports.getUserReviews = (req, res) => {
+exports.getUserReviews = (req, res) => {
     Review.findAll({
         include: {
             model: Transaction,

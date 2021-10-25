@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { DbConnectionService } from '../services/db-connection.service';
 import { User, UserService } from '../services/user.service';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private db: DbConnectionService,
     private user: UserService,
-    private route: Router) {
+    private location: Location) {
     // initialize form fields
     this.form = new FormGroup({
       login: new FormControl(),
@@ -37,8 +37,9 @@ export class LoginComponent implements OnInit {
       .then((r: User) => {
         this.user.storeCookie = d.keepSignedIn
         // set user locally
-        this.user.setUser(r)
-        this.route.navigateByUrl('/')
+        this.user.setUser(r);
+        // go back to previous page
+        this.location.back();
       })
       .catch(r => this.error = r.error.message);
   }
