@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DbConnectionService } from 'src/app/services/db-connection.service';
 import { UserService } from 'src/app/services/user.service';
-import { Location } from '@angular/common'
 import { FormControl, FormGroup } from '@angular/forms';
 import { ImageService } from 'src/app/services/image.service';
 
@@ -17,11 +16,14 @@ export class DetailComponent implements OnInit {
   error: string;
   form:FormGroup;
   transactions = [];
+  reviews = [];
+  avgScore: number = 0;
+  selectedTab = ""; // ["info", "reviews", "transactions"]
+  loading = 0; // #asynchronous tasks running
 
   constructor(private route: ActivatedRoute,
     private db : DbConnectionService,
     private user: UserService,
-    private location: Location,
     private router: Router,
     public image: ImageService) {
       // initialize form field
@@ -34,6 +36,8 @@ export class DetailComponent implements OnInit {
     // get url query params
     this.route.params.subscribe(params => {
       this.error = "";
+      if (params.type && ["info", "reviews", "transactions"].includes(params.type))
+        this.selectedTab = params.type;
       // get listingdata
       this.db.getListing(params.id)
         .then(l => {
@@ -46,6 +50,7 @@ export class DetailComponent implements OnInit {
             })
             this.listing = l
             this.listing['categories'] = categories;
+            this.loadReviews();
             // if listing if made by logged in user show transactions
             if (this.listing['userID'] === this.user.getId())
               this.loadTransactions();
@@ -56,11 +61,34 @@ export class DetailComponent implements OnInit {
     })
   }
 
+  // when type was given, scroll to given type when all data is loaded
+  onFinishLoading() {
+    this.loading -= 1;
+    if (this.loading !== 0) return;
+    if (this.selectedTab)
+      setTimeout(() => document.getElementById(this.selectedTab).scrollIntoView(), 50); // give time for transactions table to build
+    else
+      this.selectedTab = 'info';
+  }
+
+  // get reviews
+  loadReviews(){
+    this.loading += 1;
+    this.db.getListingReviews(this.listing['listingID']).then(r => {
+      this.avgScore = r['score'];
+      this.reviews = r['reviews'];
+      this.onFinishLoading();
+    }).catch(err => this.error = err.error.message)
+  }
+
   // get transactions
   loadTransactions(){
+    this.loading += 1;
     this.db.getListingTransactions(this.listing['listingID'], this.user.getLoginToken())
-              .then(b => this.transactions = b['transactions'])
-              .catch(err => this.error = err.error.message)
+      .then(b => {
+        this.transactions = b['transactions']
+        this.onFinishLoading();
+      }).catch(err => this.error = err.error.message)
   }
 
   // delete listing

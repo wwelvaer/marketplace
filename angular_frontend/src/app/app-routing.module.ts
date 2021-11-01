@@ -17,6 +17,7 @@ const routes: Routes = [
   { path: 'profile/changePassword', component: ChangePasswordComponent },
   { path: 'listings', component: ListingsComponent },
   { path: 'listings/details/:id', component: DetailComponent },
+  { path: 'listings/details/:id/:type', component: DetailComponent },
   { path: 'listings/form', component: FormComponent },
   { path: 'categories', component: CategoriesComponent },
 ];

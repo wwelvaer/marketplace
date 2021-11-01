@@ -283,11 +283,11 @@ export class DbConnectionService {
 
   /**
    * get all reviews on listing
-   * @param transactionID transactionID
+   * @param ListingID listingID
    * @returns http response promise
    */
-  getListingReviews(transactionID: number){
-    return this.http.get(`${this.url}/api/reviews/listing?id=${transactionID}`).toPromise();
+  getListingReviews(listingID: number){
+    return this.http.get(`${this.url}/api/reviews/listing?id=${listingID}`).toPromise();
   }
 
   /**

@@ -1,4 +1,4 @@
-<div *ngIf="listing && !error" class="container" style="margin: 10px;">
+<div *ngIf="listing && !error" class="container" style="margin: 10px">
   <div class="row">
     <div class="col">
       <h1>{{ listing.name }}
@@ -14,14 +14,7 @@
   </div>
   <div class="row">
     <div class="col-8">
-      <img style="width: 100%;" [src]="listing.picture ? listing.picture : image.getPlaceholderImage()">
-      <b *ngIf="listing.description">Description:</b>
-      <p *ngIf="listing.description">{{ listing.description }}</p>
-      <p *ngIf="listing.availableAssets"><b>Available Assets: </b>{{ listing.availableAssets }}</p>
-      <p *ngIf="listing.startDate"><b>Start Date:</b> {{ listing.startDate }}</p>
-      <p *ngIf="listing.location"><b>Location:</b> {{ listing.location }}</p>
-      <p><b>Seller:</b> {{ listing.userName }}</p>
-      <p *ngFor="let c of listing.categories"><b>{{c[0]}}:</b> {{ c[1].join(", ")}}</p>
+      <img style="width: 100%;border-radius: 5px;" [src]="listing.picture ? listing.picture : image.getPlaceholderImage()">
     </div>
     <div class="col">
       <h2>Asking Price:<b> €{{ listing.price }}</b></h2>
@@ -38,39 +31,84 @@
       </div>
     </div>
   </div>
-  <div *ngIf="listing.userID === user.getId()">
-    <h2>Transactions</h2>
-    <div *ngIf="transactions.length > 0">
-      <table class="table" style="margin-bottom: 20px;">
-        <thead class="thead-light">
-          <tr>
-            <th scope="col">Customer</th>
-            <th scope="col"># Assets</th>
-            <th scope="col">Price</th>
-            <th scope="col">Status</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let b of transactions">
-            <th scope="row">{{b.user.name}}</th>
-            <td>{{b.numberOfAssets}}</td>
-            <td>€{{b.numberOfAssets * b.pricePerAsset}}</td>
-            <td>{{b.status}}</td>
-            <td>
-              <div class="btn-group" role="group" *ngIf="b.status !== 'cancelled'">
-                <button type="button" *ngIf="b.status !== 'payed'" class="btn btn-lg btn-success" (click)="confirmPayment(b.transactionID)">Confirm Payment</button>
-                <button type="button" class="btn btn-lg btn-danger" (click)="cancelTransaction(b.transactionID)">Cancel</button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="btn-group" role="group" style="margin-left: 15px;margin-top: 20px;">
+    <button [class]="'btn btn' + (selectedTab !== 'info' ? '-outline': '') + '-info'" (click)="selectedTab = 'info'"
+    style="border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;border-bottom-style: hidden;">Info</button>
+    <button [class]="'btn btn' + (selectedTab !== 'reviews' ? '-outline': '') + '-success'" (click)="selectedTab = 'reviews'"
+    style="border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;border-bottom-style: hidden;">Reviews
+    <ngb-rating max=5 [(rate)]="avgScore" readonly="true" *ngIf="avgScore !== 0">
+      <ng-template let-fill="fill" let-index="index">
+        <span [style]="'position:relative;display:inline-block;font-size: 20px;color:' + (fill === 100 ? '#FAB81E' : 'gray')">
+          <span [style]="'position:absolute;display:inline-block;overflow:hidden;color: #FAB81E;width:' + fill + '%'">&#9733;</span>&#9733;</span>
+      </ng-template>
+    </ngb-rating>({{reviews.length}})</button>
+    <button *ngIf="listing.userID === user.getId()" [class]="'btn btn' + (selectedTab !== 'transactions' ? '-outline': '') + '-warning'" (click)="selectedTab = 'transactions'"
+    style="border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;border-bottom-style: hidden;">Transactions</button>
+  </div>
+  <div [style]="'border-style: solid;border-radius: 12px;border-width: 1px;padding: 10px;border-color:' + {info: '#17a2b8', reviews: '#28a745', transactions: '#ffc107'}[selectedTab]" id="details">
+    <div *ngIf="selectedTab === 'info'" id='info'>
+      <b *ngIf="listing.description">Description:</b>
+        <p *ngIf="listing.description">{{ listing.description }}</p>
+        <p *ngIf="listing.availableAssets"><b>Available Assets: </b>{{ listing.availableAssets }}</p>
+        <p *ngIf="listing.startDate"><b>Start Date:</b> {{ listing.startDate }}</p>
+        <p *ngIf="listing.location"><b>Location:</b> {{ listing.location }}</p>
+        <p><b>Seller:</b> {{ listing.userName }}</p>
+        <p *ngFor="let c of listing.categories"><b>{{c[0]}}:</b> {{ c[1].join(", ")}}</p>
     </div>
-    <div *ngIf="transactions.length === 0">
-      No one has make a transaction yet
+    <div *ngIf="selectedTab === 'reviews'" id='reviews'>
+      <div *ngIf="reviews.length > 0">
+        <div *ngFor="let review of reviews">
+          <img style="border-radius: 50%; height: 30px; width: 30px" [src]="review.transaction.user.profilePicture ? review.transaction.user.profilePicture: '/assets/userPlaceholder.png'">
+          {{review.transaction.user.userName}}
+          <ngb-rating max=5 [(rate)]="review.score" readonly="true">
+            <ng-template let-fill="fill" let-index="index">
+              <span [style]="'position:relative;display:inline-block;font-size: 20px;color:' + (fill === 100 ? '#FAB81E' : 'gray')">&#9733;</span>
+            </ng-template>
+          </ngb-rating>
+          <p *ngIf="review.comment" style="margin-left: 10px;">
+            {{review.comment}}
+          </p>
+          <hr>
+        </div>
+      </div>
+      <div *ngIf="reviews.length === 0">
+        No one has reviewed this listing yet
+      </div>
+    </div>
+    <div *ngIf="selectedTab === 'transactions'" id='transactions'>
+      <div *ngIf="transactions.length > 0">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Customer</th>
+              <th scope="col"># Assets</th>
+              <th scope="col">Price</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let b of transactions">
+              <th scope="row">{{b.user.name}}</th>
+              <td>{{b.numberOfAssets}}</td>
+              <td>€{{b.numberOfAssets * b.pricePerAsset}}</td>
+              <td>{{b.status}}</td>
+              <td>
+                <div class="btn-group" role="group" *ngIf="b.status !== 'cancelled'">
+                  <button type="button" *ngIf="b.status !== 'payed'" class="btn btn-lg btn-success" (click)="confirmPayment(b.transactionID)">Confirm Payment</button>
+                  <button type="button" class="btn btn-lg btn-danger" (click)="cancelTransaction(b.transactionID)">Cancel</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="transactions.length === 0">
+        No one has make a transaction yet
+      </div>
     </div>
   </div>
+
 </div>
 <div *ngIf="error" style="margin: 10px;">
   <h1>ERROR</h1>

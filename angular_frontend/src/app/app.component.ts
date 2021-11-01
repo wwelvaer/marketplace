@@ -49,7 +49,7 @@ export class AppComponent {
       switch (notification['type']) {
         case 'new transaction':
           // go to detail page of listing
-          this.router.navigate(['/listings/details', notification['transaction'].listingID])
+          this.router.navigate(['/listings/details', notification['transaction'].listingID, 'transactions'])
           break;
         case 'cancellation':
           if (notification['transaction'].customerID === this.user.getId())
@@ -57,7 +57,7 @@ export class AppComponent {
             this.router.navigate(['/listings'], {queryParams: { transactions: true }})
           else
             // go to detail page of listing
-            this.router.navigate(['/listings/details', notification['transaction'].listingID])
+            this.router.navigate(['/listings/details', notification['transaction'].listingID, 'transactions'])
           break;
         case 'payment confirmation':
           // go to my transactions

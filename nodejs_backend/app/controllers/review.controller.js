@@ -2,6 +2,7 @@ const db = require("../models");
 const Review = db.review;
 const Transaction = db.transaction;
 const Listing = db.listing;
+const User = db.user;
 
 /** post a review
  * expected query param:
@@ -53,21 +54,26 @@ exports.postReview = (req, res) => {
 
 /** get all reviews on listing
  * expected query param:
- * @param id transactionID 
+ * @param id listingID 
  */
 exports.getListingReviews = (req, res) => {
     Review.findAll({
         include: {
             model: Transaction,
-            attributes: ['listingID']
+            include: {
+                model: User,
+                attributes: ['userName', 'profilePicture']
+            },
+            attributes: ['listingID', 'customerID']
         },
         where: {
             reviewType: 'listing',
             '$transaction.listingID$': req.query.id
-        }
+        },
+        attributes: ['reviewID', 'score', 'comment', 'transaction.user.userName']
     }).then(r => {
         // send data
-        return res.status(200).send({reviews: r})
+        return res.status(200).send({reviews: r, score: getAvgScore(r)})
     })
 }
 
@@ -87,6 +93,14 @@ exports.getUserReviews = (req, res) => {
         }
     }).then(r => {
         // send data
-        return res.status(200).send({reviews: r})
+        return res.status(200).send({reviews: r, score: getAvgScore(r)})
     })
+}
+
+function getAvgScore(obj){
+    return [obj.map(x => x.score).reduce((m, x) => {
+            m[0] += 1
+            m[1] += x
+            return m
+        }, [0, 0])].map(x => x[1] / x[0] || 0)[0]
 }
