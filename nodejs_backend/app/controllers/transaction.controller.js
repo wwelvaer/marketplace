@@ -4,6 +4,7 @@ const Listing = db.listing;
 const User = db.user;
 const Notification = db.notification;
 const Review = db.review;
+const sequelize = db.sequelize;
 
 /** get all transactions on a given listingid
  * expected Query param:
@@ -15,6 +16,7 @@ exports.getListingTransactions = (req, res) => {
         where: {
             listingID: req.query.id
         },
+        order: [['time', 'DESC']],
     }).then(listing => {
         // catch errors
         if (!listing)
@@ -28,22 +30,8 @@ exports.getListingTransactions = (req, res) => {
             },
             // include userdata (when user has no firstName and lastName use email as name)
             include: {model: User, attributes: ['userID', [db.sequelize.literal("CASE WHEN firstName = '' AND lastName = '' THEN email ELSE CONCAT(firstName, ' ', lastName) END"), 'name']]},
-        }).then(b => {
-            let checkedTransactions = [];
-            b.forEach(x => {
-                Review.findOne({
-                    where: {
-                        transactionID: x.transactionID,
-                        reviewType: 'user'
-                    }
-                }).then(r => {
-                    x.dataValues['reviewed'] = Boolean(r);
-                    checkedTransactions.push(x);
-                    if (checkedTransactions.length == b.length)
-                        // send data
-                        return res.status(200).send({transactions: checkedTransactions})
-                })
-            });
+        }).then(t => {
+            checkReviewable(t, 'user', res);
         })
     })
 };
@@ -56,24 +44,28 @@ exports.getUserTransactions = (req, res) => {
         },
         // include listingdata
         include: {model: Listing, attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'userID']},
-    }).then(b => {
-        let checkedTransactions = [];
-        b.forEach(x => {
-            Review.findOne({
-                where: {
-                    transactionID: x.transactionID,
-                    reviewType: 'listing'
-                }
-            }).then(r => {
-                x.dataValues['reviewed'] = Boolean(r);
-                checkedTransactions.push(x);
-                if (checkedTransactions.length == b.length)
-                    // send data
-                    return res.status(200).send({transactions: checkedTransactions})
-            })
-        });
+        order: [['time', 'DESC']],
+    }).then(t => {
+        checkReviewable(t, 'listing', res);
     })
 };
+
+function checkReviewable(transactions, reviewType, res){
+    let checkedTransactions = [];
+    transactions.forEach(x => {
+        Review.findOne({
+            where: {
+                transactionID: x.transactionID,
+                reviewType: reviewType
+            }
+        }).then(r => {
+            x.dataValues['reviewable'] = !Boolean(r) && Math.ceil((Date.now() - x.time) / (1000 * 60 * 60 * 24)) >= 10;
+            checkedTransactions.push(x);
+            if (checkedTransactions.length == transactions.length)
+                res.status(200).send({transactions: checkedTransactions});
+        })
+    });
+}
 
 /** creates transaction
  * expected params in body:
@@ -102,7 +94,8 @@ exports.createTransaction = (req, res) => {
             pricePerAsset: listing.price,
             customerID: req.userId, // get user from webtoken
             status: 'reserved',
-            listingID: listing.listingID
+            listingID: listing.listingID,
+            time: sequelize.literal('NOW()')
         }).then(t => {
             // update listing's available assets
             if (listing.availableAssets)
@@ -112,6 +105,13 @@ exports.createTransaction = (req, res) => {
                 viewed: false,
                 userID: listing.userID,
                 type: 'new transaction'
+            })
+            Notification.create({
+                transactionID: t.transactionID,
+                viewed: false,
+                userID: req.userId,
+                type: 'reviewable',
+                activeAt: sequelize.literal('NOW() + INTERVAL 10 day')
             })
             listing.save().then(() => {
                 res.send({ message: "Transaction was created successfully!", customerID: t.customerID });

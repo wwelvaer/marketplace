@@ -11,7 +11,7 @@ module.exports = function(app) {
     });
   
     app.post(
-      "/api/review/post",
+      "/api/review",
       [authJwt.verifyToken],
       controller.postReview
     );

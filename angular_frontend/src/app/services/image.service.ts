@@ -37,4 +37,8 @@ export class ImageService {
   getPlaceholderImage(){
     return "/assets/placeholderImage.jpg";
   }
+
+  getUserPlaceholderImage(){
+    return "/assets/userPlaceholder.png";
+  }
 }

@@ -7,13 +7,16 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       type: {
-        type: Sequelize.ENUM('new transaction', 'cancellation', 'payment confirmation'),
+        type: Sequelize.ENUM('new transaction', 'cancellation', 'payment confirmation', 'reviewable'),
         allowNull: false,
       },
       viewed: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         default: false
+      },
+      activeAt: {
+        type: Sequelize.DATE
       }
     }, {
         timestamps: false,

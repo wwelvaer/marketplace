@@ -35,7 +35,9 @@ export class AppComponent {
         else
           return `A transaction on your ${notification['transaction'].listing.name} has been cancelled`
       case 'payment confirmation':
-        return `Your payment on ${notification['transaction'].listing.name} has been confirmed, you can now leave a review`
+        return `Your payment on ${notification['transaction'].listing.name} has been confirmed`
+      case 'reviewable':
+        return `You can review your recent transaction of ${notification['transaction'].listing.name}`
       default:
         break;
     }
@@ -60,6 +62,7 @@ export class AppComponent {
             this.router.navigate(['/listings/details', notification['transaction'].listingID, 'transactions'])
           break;
         case 'payment confirmation':
+        case 'reviewable':
           // go to my transactions
           this.router.navigate(['/listings'], {queryParams: { transactions: true }})
           break;

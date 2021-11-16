@@ -278,7 +278,7 @@ export class DbConnectionService {
    * @returns http response promise
    */
   postReview(userToken: string, transactionID: number, fields: object){
-    return this.http.post(`${this.url}/api/review/post?id=${transactionID}`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
+    return this.http.post(`${this.url}/api/review?id=${transactionID}`, fields, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
   /**

@@ -2,12 +2,21 @@ const db = require("../models");
 const Notification = db.notification;
 const Transaction = db.transaction;
 const Listing = db.listing;
+const Op = db.Sequelize.Op
+const sequelize = db.sequelize;
 
 // get all notifications from user
 exports.getUserNotifications = (req, res) => {
     Notification.findAll({
         where: {
-            userID: req.userId
+            userID: req.userId,
+            // check if notification is only active from certain date
+            activeAt: {
+              [Op.or]: {
+                [Op.not]: sequelize.literal('NOW()'),
+                [Op.is]: null
+              }   
+            }
         },
         // include customerID, listingID and listing name
         include: {model: Transaction, attributes: ['listingID', 'customerID'], include: {model: Listing, attributes: ['name']}},

@@ -12,7 +12,7 @@ import { UserService } from '../services/user.service';
 })
 export class ListingsComponent implements OnInit {
 
-  activeListings: boolean = true;
+  activeListings: boolean = true; // show only active listings
   hasCancelled: boolean = false;
   selected: Date | null; // calendar value
   listings = []
@@ -67,10 +67,10 @@ export class ListingsComponent implements OnInit {
   filteredListings = () => {
     let selectedCategories = this.categories.map(x => x[1]).reduce((acc, val) => acc.concat(val), []).filter(x => x.selected).map(x => x.name);
     return this.listings
-    .filter(l => (this.activeListings && l.status !== "cancelled") || !this.activeListings) // filter only active listings
+    .filter(l => l.status !== "cancelled" || !this.activeListings) // filter only active listings
     .filter(l => selectedCategories.every(x => (l.categories).includes(x))) // categories
     .filter(u => Object.values(u).join("").toString().toLowerCase().indexOf(this.searchTerm.toString().toLowerCase()) > -1 && (!this.selected || this.selected.getTime() >= new Date(u.startDate).setHours(0, 0, 0, 0)))
-    .sort(this.sortCols[this.sortCol].sortFunc)
+    .sort(this.transactions ? (a, b) => 1 : this.sortCols[this.sortCol].sortFunc)
   }
 
   constructor(private db: DbConnectionService,
@@ -93,10 +93,10 @@ export class ListingsComponent implements OnInit {
     // get url query params
     this.route.queryParamMap.subscribe(qMap => {
       // when query has 'transactions' parameter display transactionInfo
-      this.transactions = !!qMap['params'].transactions
-      if (this.transactions)
+      if (!!qMap['params'].transactions)
         this.fetchTransactions();
       else {
+        this.transactions = false
         // when query has 'id' parameter display listings from user with id
         let uId = qMap['params'].id;
         if (uId)
@@ -117,8 +117,9 @@ export class ListingsComponent implements OnInit {
   fetchTransactions(){
     this.db.getUserTransactions(this.user.getLoginToken())
         .then(l => {
-          this.listings = l['transactions'].sort((a, b) => b.transactionID - a.transactionID).map(x => {return {...x, ...x.listing}})
+          this.listings = l['transactions'].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).map(x => {return {...x, ...x.listing}})
           this.hasCancelled = this.listings.some(x => x.status === "cancelled")
+          this.transactions = true
         })
   }
 

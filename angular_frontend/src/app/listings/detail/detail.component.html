@@ -3,6 +3,7 @@
     <div class="col">
       <h1>{{ listing.name }}
         <b *ngIf="listing.status ==='cancelled'" style="color: red;"> (CANCELLED) </b>
+        <b *ngIf="listing.availableAssets === 0" style="color: red;"> (SOLD OUT) </b>
       </h1>
     </div>
     <div class="col-auto" *ngIf="user.getId() === listing.userID && listing.status !== 'cancelled'">
@@ -18,7 +19,7 @@
     </div>
     <div class="col">
       <h2>Asking Price:<b> €{{ listing.price }}</b></h2>
-      <div class="card" *ngIf="user.isLoggedIn() && listing.userID !== user.getId()">
+      <div class="card" *ngIf="user.isLoggedIn() && listing.userID !== user.getId() && listing.availableAssets !== 0">
         <div class="card-body">
           <form [formGroup]="form" (ngSubmit)="createTransaction()">
             <div class="form-group">
@@ -49,7 +50,7 @@
     <div *ngIf="selectedTab === 'info'" id='info'>
       <b *ngIf="listing.description">Description:</b>
         <p *ngIf="listing.description">{{ listing.description }}</p>
-        <p *ngIf="listing.availableAssets"><b>Available Assets: </b>{{ listing.availableAssets }}</p>
+        <p *ngIf="listing.availableAssets || listing.availableAssets === 0"><b>Available Assets: </b>{{ listing.availableAssets }}</p>
         <p *ngIf="listing.startDate"><b>Start Date:</b> {{ listing.startDate }}</p>
         <p *ngIf="listing.location"><b>Location:</b> {{ listing.location }}</p>
         <p><b>Seller:</b> {{ listing.userName }}</p>
@@ -58,7 +59,7 @@
     <div *ngIf="selectedTab === 'reviews'" id='reviews'>
       <div *ngIf="reviews.length > 0">
         <div *ngFor="let review of reviews">
-          <img style="border-radius: 50%; height: 30px; width: 30px" [src]="review.transaction.user.profilePicture ? review.transaction.user.profilePicture: '/assets/userPlaceholder.png'">
+          <img style="border-radius: 50%; height: 30px; width: 30px" [src]="review.transaction.user.profilePicture ? review.transaction.user.profilePicture: image.getUserPlaceholderImage()">
           {{review.transaction.user.userName}}
           <ngb-rating max=5 [(rate)]="review.score" readonly="true">
             <ng-template let-fill="fill" let-index="index">
@@ -80,6 +81,7 @@
         <table class="table">
           <thead class="thead-light">
             <tr>
+              <th scope="col">Time</th>
               <th scope="col">Customer</th>
               <th scope="col"># Assets</th>
               <th scope="col">Price</th>
@@ -89,6 +91,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let b of transactions">
+              <td>{{b.time.split('T').join(' ').split(':').slice(0, -1).join(':')}}</td>
               <th scope="row">{{b.user.name}}</th>
               <td>{{b.numberOfAssets}}</td>
               <td>€{{b.numberOfAssets * b.pricePerAsset}}</td>

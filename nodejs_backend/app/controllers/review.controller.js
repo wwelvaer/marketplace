@@ -1,4 +1,5 @@
 const db = require("../models");
+const sequelize = require('sequelize');
 const Review = db.review;
 const Transaction = db.transaction;
 const Listing = db.listing;
@@ -14,7 +15,8 @@ const User = db.user;
 exports.postReview = (req, res) => {
     Transaction.findOne({
         where: {
-            transactionID: req.query.id
+            transactionID: req.query.id,
+            time: sequelize.literal('date_add(`transaction`.`time`, INTERVAL 10 day) <= NOW()')
         },
         include: {
             model: Listing,
@@ -23,13 +25,11 @@ exports.postReview = (req, res) => {
     }).then(transaction => {
         // catch errors
         if (!transaction)
-            return res.status(404).send({ message: "Invalid transactionID" });
+            return res.status(404).send({ message: "Invalid transactionID or transaction is not yet reviewable" });
         if (req.userId !== transaction.listing.userID && req.userId !== transaction.customerID)
             return res.status(401).send({ message: "Only customer and provider of transaction can post a transaction" })
-        if (req.body.score < 1 || req.body.score > 5)
+        if (!(req.body.score >1 && req.body.score <= 5))
             return res.status(400).send({ message: "Score must be in range [1,5]" })
-        if (transaction.status !== 'payed')
-            return res.status(402).send({ message: "Only payed transactions can be reviewed" })
         Review.findOne({
             where: {
                 transactionID: transaction.transactionID,
@@ -97,6 +97,7 @@ exports.getUserReviews = (req, res) => {
     })
 }
 
+// calculates average score of all reviews
 function getAvgScore(obj){
     return [obj.map(x => x.score).reduce((m, x) => {
             m[0] += 1
