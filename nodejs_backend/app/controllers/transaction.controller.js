@@ -16,7 +16,6 @@ exports.getListingTransactions = (req, res) => {
         where: {
             listingID: req.query.id
         },
-        order: [['time', 'DESC']],
     }).then(listing => {
         // catch errors
         if (!listing)
@@ -30,6 +29,7 @@ exports.getListingTransactions = (req, res) => {
             },
             // include userdata (when user has no firstName and lastName use email as name)
             include: {model: User, attributes: ['userID', [db.sequelize.literal("CASE WHEN firstName = '' AND lastName = '' THEN email ELSE CONCAT(firstName, ' ', lastName) END"), 'name']]},
+            order: [['time', 'DESC']],
         }).then(t => {
             checkReviewable(t, 'user', res);
         })
