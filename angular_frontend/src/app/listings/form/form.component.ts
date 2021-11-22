@@ -34,7 +34,7 @@ export class FormComponent implements OnInit {
       name: new FormControl(),
       description: new FormControl(),
       availableAssets: new FormControl(),
-      startDate: new FormControl(),
+      date: new FormControl(),
       price: new FormControl(),
       location: new FormControl(),
     })
@@ -55,7 +55,7 @@ export class FormComponent implements OnInit {
             name: l['name'],
             description: l['description'],
             availableAssets: l['availableAssets'],
-            startDate: l['startDate'],
+            date: l['date'],
             price: l['price'],
             location: l['location'],
           })

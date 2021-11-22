@@ -118,7 +118,7 @@ export class DbConnectionService {
    *  @field name
    *  @field description
    *  @field availableAssets
-   *  @field startDate
+   *  @field date
    *  @field price
    *  @field picture: image in base64 format
    *  @field location
@@ -145,7 +145,7 @@ export class DbConnectionService {
    *  @field name
    *  @field description
    *  @field availableAssets
-   *  @field startDate
+   *  @field date
    *  @field price
    *  @field picture: image in base64 format
    *  @field location

@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
       availableAssets: {
         type: Sequelize.INTEGER
       },
-      startDate: {
+      date: {
         type: Sequelize.DATEONLY
       },
       price: {
@@ -27,6 +27,7 @@ module.exports = (sequelize, Sequelize) => {
       location: {
         type: Sequelize.STRING
       },
+      // store categories as string (separated by ;)
       categories: {
         type: Sequelize.STRING,
         get() {

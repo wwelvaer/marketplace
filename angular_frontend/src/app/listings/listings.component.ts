@@ -36,17 +36,23 @@ export class ListingsComponent implements OnInit {
       name: 'Available assets: High -> Low',
       sortFunc: (a, b) => b.availableAssets - a.availableAssets
     }, {
-      name: 'Start Date: Recent -> Oldest',
-      sortFunc: (a, b) => -(a.startDate ? a.startDate : "").localeCompare(b.startDate ? b.startDate : "")
+      name: 'Date: Recent -> Oldest',
+      sortFunc: (a, b) => -(a.date ? a.date : "").localeCompare(b.date ? b.date : "")
     }, {
-      name: 'Start Date: Oldest -> Recent',
-      sortFunc: (a, b) => (a.startDate ? a.startDate : "").localeCompare(b.startDate ? b.startDate : "")
+      name: 'Date: Oldest -> Recent',
+      sortFunc: (a, b) => (a.date ? a.date : "").localeCompare(b.date ? b.date : "")
     }, {
       name: 'Price: Low -> High',
       sortFunc: (a, b) => a.price - b.price
     }, {
       name: 'Price: High -> Low',
       sortFunc: (a, b) => b.price - a.price
+    }, {
+      name: 'Rating: Best -> Worst',
+      sortFunc: (a, b) => b.avgScore - a.avgScore
+    }, {
+      name: 'Rating: Worst -> Best',
+      sortFunc: (a, b) => a.avgScore - b.avgScore
     }];
 
   // review
@@ -69,7 +75,7 @@ export class ListingsComponent implements OnInit {
     return this.listings
     .filter(l => l.status !== "cancelled" || !this.activeListings) // filter only active listings
     .filter(l => selectedCategories.every(x => (l.categories).includes(x))) // categories
-    .filter(u => Object.values(u).join("").toString().toLowerCase().indexOf(this.searchTerm.toString().toLowerCase()) > -1 && (!this.selected || this.selected.getTime() >= new Date(u.startDate).setHours(0, 0, 0, 0)))
+    .filter(u => Object.values(u).join("").toString().toLowerCase().indexOf(this.searchTerm.toString().toLowerCase()) > -1 && (!this.selected || this.selected.getTime() === new Date(u.date).setHours(0, 0, 0, 0)))
     .sort(this.transactions ? (a, b) => 1 : this.sortCols[this.sortCol].sortFunc)
   }
 
@@ -133,7 +139,6 @@ export class ListingsComponent implements OnInit {
     let v = this.form.getRawValue();
     v['score'] = this.rating;
     this.db.postReview(this.user.getLoginToken(), this.selectedTransactionForReview, v).then(r => {
-      console.log(r);
       this.router.navigateByUrl('/listings/details/' + r['listingID']);
     })
   }

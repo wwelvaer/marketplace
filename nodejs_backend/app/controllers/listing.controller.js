@@ -1,18 +1,17 @@
 const db = require("../models");
+const sequelize = require('sequelize');
 const Listing = db.listing;
 const Transaction = db.transaction;
 const User = db.user;
 const Notification = db.notification;
+const Review = db.review;
 
 // returns all listings
 exports.getAllListings = (req, res) => {
-    Listing.findAll({
-        where: {
-            status: 'active'
-        },
-    }).then(l => {
-        return res.status(200).send({listings: l})
-    })
+    db.sequelize.query("SELECT l.*, r.avgScore, r.reviewAmount FROM listing as l LEFT JOIN (SELECT listingID, cast(AVG(score) as decimal(3,2)) as avgScore, IFNULL(COUNT(score), 0) as reviewAmount FROM review as r INNER JOIN transaction as t USING (transactionID) WHERE r.reviewType = 'listing' GROUP BY t.listingID) as r USING(listingID)")
+        .then(l => {
+            return res.status(200).send({listings: l[0]})
+        })
 };
  
 /** get all listings made by given user
@@ -34,7 +33,7 @@ exports.getUserListings = (req, res) => {
  * @param name
  * @param description
  * @param availableAssets
- * @param startDate
+ * @param date
  * @param price
  * @param picture // image in base64 format
  * @param location
@@ -45,7 +44,7 @@ exports.createListing = (req, res) => {
         name: req.body.name,
         description: req.body.description,
         availableAssets: req.body.availableAssets,
-        startDate: req.body.startDate,
+        date: req.body.date,
         price: req.body.price,
         picture: req.body.picture,
         location: req.body.location,
@@ -80,7 +79,7 @@ exports.getListing = (req, res) => {
             name: listing.name,
             description: listing.description,
             availableAssets: listing.availableAssets,
-            startDate: listing.startDate,
+            date: listing.date,
             price: listing.price,
             picture: listing.picture,
             location: listing.location,
@@ -100,7 +99,7 @@ exports.getListing = (req, res) => {
  * @param name
  * @param description
  * @param availableAssets
- * @param startDate
+ * @param date
  * @param price
  * @param picture // image in base64 format
  * @param location
@@ -121,7 +120,7 @@ exports.postListing = (req, res) => {
         listing.name = req.body.name
         listing.description = req.body.description
         listing.availableAssets = req.body.availableAssets
-        listing.startDate = req.body.startDate
+        listing.date = req.body.date
         listing.price = req.body.price
         listing.picture = req.body.picture
         listing.location = req.body.location

@@ -43,7 +43,7 @@ exports.getUserTransactions = (req, res) => {
             customerID: req.userId // get user from webtoken
         },
         // include listingdata
-        include: {model: Listing, attributes: ['listingID', 'name', 'availableAssets', 'startDate', 'price', 'picture', 'userID']},
+        include: {model: Listing, attributes: ['listingID', 'name', 'availableAssets', 'date', 'price', 'picture', 'userID']},
         order: [['time', 'DESC']],
     }).then(t => {
         checkReviewable(t, 'listing', res);

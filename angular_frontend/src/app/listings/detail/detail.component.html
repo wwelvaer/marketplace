@@ -51,7 +51,7 @@
       <b *ngIf="listing.description">Description:</b>
         <p *ngIf="listing.description">{{ listing.description }}</p>
         <p *ngIf="listing.availableAssets || listing.availableAssets === 0"><b>Available Assets: </b>{{ listing.availableAssets }}</p>
-        <p *ngIf="listing.startDate"><b>Start Date:</b> {{ listing.startDate }}</p>
+        <p *ngIf="listing.date"><b>Date:</b> {{ listing.date }}</p>
         <p *ngIf="listing.location"><b>Location:</b> {{ listing.location }}</p>
         <p><b>Seller:</b> {{ listing.userName }}</p>
         <p *ngFor="let c of listing.categories"><b>{{c[0]}}:</b> {{ c[1].join(", ")}}</p>
@@ -92,7 +92,12 @@
           <tbody>
             <tr *ngFor="let b of transactions">
               <td>{{b.time.split('T').join(' ').split(':').slice(0, -1).join(':')}}</td>
-              <th scope="row">{{b.user.name}}</th>
+              <th scope="row">{{b.user.name}} <ngb-rating max=5 [(rate)]="b.userScore" readonly="true" *ngIf="b.userScore !== 0">
+                <ng-template let-fill="fill" let-index="index">
+                  <span [style]="'position:relative;display:inline-block;font-size: 20px;color:' + (fill === 100 ? '#FAB81E' : 'gray')">
+                    <span [style]="'position:absolute;display:inline-block;overflow:hidden;color: #FAB81E;width:' + fill + '%'">&#9733;</span>&#9733;</span>
+                </ng-template>
+              </ngb-rating><span *ngIf="b.userScore !== 0">({{b.userReviews.length}})</span></th>
               <td>{{b.numberOfAssets}}</td>
               <td>€{{b.numberOfAssets * b.pricePerAsset}}</td>
               <td>{{b.status}}</td>

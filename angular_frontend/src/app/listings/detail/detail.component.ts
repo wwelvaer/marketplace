@@ -87,6 +87,12 @@ export class DetailComponent implements OnInit {
     this.db.getListingTransactions(this.listing['listingID'], this.user.getLoginToken())
       .then(b => {
         this.transactions = b['transactions']
+        this.transactions.forEach(t => {
+          this.db.getUserReviews(t['customerID']).then(r => {
+            t['userReviews'] = r['reviews']
+            t['userScore'] = r['score']
+          });
+        })
         this.onFinishLoading();
       }).catch(err => this.error = err.error.message)
   }
