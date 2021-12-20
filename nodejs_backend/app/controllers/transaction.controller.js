@@ -90,6 +90,8 @@ exports.createTransaction = (req, res) => {
             return res.status(400).send({ message: "Not enough assets available" });
         if (req.userId === listing.userID)
             return res.status(401).send({ message: "Can't make a transaction on your own listing" })
+        if (listing.status === 'cancelled')
+            return res.status(400).send({ message : "Can't make a transaction on a cancelled listing" })
         // create transaction
         Transaction.create({
             numberOfAssets: req.body.numberOfAssets,
