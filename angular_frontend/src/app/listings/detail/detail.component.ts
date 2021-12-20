@@ -29,26 +29,27 @@ export class DetailComponent implements OnInit {
       // initialize form field
       this.form = new FormGroup({
         numberOfAssets: new FormControl()
-      })
+      });
     }
 
   ngOnInit(): void {
     // get url query params
     this.route.params.subscribe(params => {
       this.error = "";
+      // when detail-type is given in url
       if (params.type && ["info", "reviews", "transactions"].includes(params.type))
         this.selectedTab = params.type;
       // get listingdata
       this.db.getListing(params.id)
         .then(l => {
           this.db.getCategories().then(c => {
-            let categories = []
+            let categories = [];
             Object.entries(c).forEach(([k, v]) => {
               let v2 = v.filter(x => l["categories"].includes(x));
               if (v2.length > 0)
                 categories.push([k, v2])
             })
-            this.listing = l
+            this.listing = l;
             this.listing['categories'] = categories;
             this.loadReviews();
             // if listing if made by logged in user show transactions
@@ -57,7 +58,7 @@ export class DetailComponent implements OnInit {
           })
 
         })
-        .catch(err => this.error = err.error.message)
+        .catch(err => this.error = err.error.message);
     })
   }
 
@@ -94,7 +95,9 @@ export class DetailComponent implements OnInit {
           });
         })
         this.onFinishLoading();
-      }).catch(err => this.error = err.error.message)
+      }).catch(err => {
+        this.error = err.error.message
+      })
   }
 
   // delete listing

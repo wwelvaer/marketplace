@@ -51,6 +51,8 @@ exports.getUserTransactions = (req, res) => {
 };
 
 function checkReviewable(transactions, reviewType, res){
+    if (transactions.length === 0)
+        return res.status(200).send({transactions: []});
     let checkedTransactions = [];
     transactions.forEach(x => {
         Review.findOne({

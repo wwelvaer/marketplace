@@ -5,6 +5,9 @@ import { DbConnectionService } from '../services/db-connection.service';
 import { ImageService } from '../services/image.service';
 import { UserService } from '../services/user.service';
 
+/**
+ *  Component is used to display listings or transactions
+ */
 @Component({
   selector: 'app-listings',
   templateUrl: './listings.component.html',
@@ -75,8 +78,9 @@ export class ListingsComponent implements OnInit {
     return this.listings
     .filter(l => l.status !== "cancelled" || !this.activeListings) // filter only active listings
     .filter(l => selectedCategories.every(x => (l.categories).includes(x))) // categories
-    .filter(u => Object.values(u).join("").toString().toLowerCase().indexOf(this.searchTerm.toString().toLowerCase()) > -1 && (!this.selected || this.selected.getTime() === new Date(u.date).setHours(0, 0, 0, 0)))
-    .sort(this.transactions ? (a, b) => 1 : this.sortCols[this.sortCol].sortFunc)
+    .filter(u => Object.values(u).join("").toString().toLowerCase().indexOf(this.searchTerm.toString().toLowerCase()) > -1 // filter matching search terms
+      && (!this.selected || this.selected.getTime() === new Date(u.date).setHours(0, 0, 0, 0))) // when date is selected filter on date
+    .sort(this.transactions ? (a, b) => 1 : this.sortCols[this.sortCol].sortFunc) // only listings need to be sorted clientside
   }
 
   constructor(private db: DbConnectionService,

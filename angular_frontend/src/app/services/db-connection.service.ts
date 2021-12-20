@@ -172,6 +172,7 @@ export class DbConnectionService {
    * @returns http response promise
    */
   getListingTransactions(listingID: number, userToken: string){
+    console.log("Ja tot ier")
     return this.http.get(`${this.url}/api/transactions/listing?id=${listingID}`, {headers: this.getTokenHeader(userToken)}).toPromise();
   }
 
